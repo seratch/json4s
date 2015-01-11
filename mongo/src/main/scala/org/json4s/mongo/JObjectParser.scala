@@ -17,21 +17,21 @@
 package org.json4s
 package mongo
 
-import java.util.{Date, UUID}
+import java.util.{ Date, UUID }
 import java.util.regex.Pattern
-import com.mongodb.{BasicDBObject, BasicDBList, DBObject}
+import com.mongodb.{ BasicDBObject, BasicDBList, DBObject }
 import org.bson.types.ObjectId
 import java.util.concurrent.atomic.AtomicReference
 import org.json4s.ParserUtil.ParseException
 import collection.JavaConverters._
 
-object JObjectParser  {
+object JObjectParser {
   /**
-    * Set this to override JObjectParser turning strings that are valid
-    * ObjectIds into actual ObjectIds. For example, place the following in Boot.boot:
-    *
-    * <code>JObjectParser.stringProcessor.default.set((s: String) => s)</code>
-    */
+   * Set this to override JObjectParser turning strings that are valid
+   * ObjectIds into actual ObjectIds. For example, place the following in Boot.boot:
+   *
+   * <code>JObjectParser.stringProcessor.default.set((s: String) => s)</code>
+   */
   val stringProcessor = new AtomicReference[String => Object](defaultStringProcessor _) {}
 
   def defaultStringProcessor(s: String): Object = {
@@ -57,7 +57,7 @@ object JObjectParser  {
       case x if isPrimitive(x.getClass) => primitive2jvalue(x)
       case x if isDateType(x.getClass) => datetype2jvalue(x)(formats)
       case x if isMongoType(x.getClass) => mongotype2jvalue(x)(formats)
-      case x: BasicDBList => JArray(x.asScala.toList.map( x => serialize(x, formats)))
+      case x: BasicDBList => JArray(x.asScala.toList.map(x => serialize(x, formats)))
       case x: BasicDBObject => JObject(
         x.keySet.asScala.toList.map { f =>
           JField(f.toString, serialize(x.get(f.toString), formats))
@@ -127,18 +127,16 @@ object JObjectParser  {
       case JNothing => sys.error("can't render 'nothing'")
       case JString(null) => "null"
       case JString(s) => stringProcessor.get()(s)
-      case _ =>  ""
+      case _ => ""
     }
 
     // FIXME: This is not ideal.
     private def renderInteger(i: BigInt): Object = {
       if (i <= java.lang.Integer.MAX_VALUE && i >= java.lang.Integer.MIN_VALUE) {
         new java.lang.Integer(i.intValue)
-      }
-      else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE) {
+      } else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE) {
         new java.lang.Long(i.longValue)
-      }
-      else {
+      } else {
         i.toString
       }
     }

@@ -19,7 +19,8 @@ package native
 
 import scala.reflect.Manifest
 
-/** Functions to serialize and deserialize a case class.
+/**
+ * Functions to serialize and deserialize a case class.
  * Custom serializer can be inserted if a class is not a case class.
  * <p>
  * Example:<pre>
@@ -29,43 +30,50 @@ import scala.reflect.Manifest
  *
  * @see org.json4s.TypeHints
  */
-object Serialization extends Serialization  {
-  import java.io.{Reader, StringWriter, Writer}
-  /** Serialize to String.
+object Serialization extends Serialization {
+  import java.io.{ Reader, StringWriter, Writer }
+  /**
+   * Serialize to String.
    */
   def write[A <: AnyRef](a: A)(implicit formats: Formats): String = {
     (write(a, new StringWriter)(formats)).toString
   }
 
-  /** Serialize to Writer.
+  /**
+   * Serialize to Writer.
    */
   def write[A <: AnyRef, W <: Writer](a: A, out: W)(implicit formats: Formats): W = {
     Extraction.decomposeWithBuilder(a, JsonWriter.streaming(out))(formats)
   }
 
-  /** Serialize to String (pretty format).
+  /**
+   * Serialize to String (pretty format).
    */
   def writePretty[A <: AnyRef](a: A)(implicit formats: Formats): String =
     (writePretty(a, new StringWriter)(formats)).toString
 
-  /** Serialize to Writer (pretty format).
+  /**
+   * Serialize to Writer (pretty format).
    */
   def writePretty[A <: AnyRef, W <: Writer](a: A, out: W)(implicit formats: Formats): W = {
     Extraction.decomposeWithBuilder(a, JsonWriter.streamingPretty(out))(formats)
   }
 
-  /** Serialize to String (pretty format).
+  /**
+   * Serialize to String (pretty format).
    */
   def writePrettyOld[A <: AnyRef](a: A)(implicit formats: Formats): String =
     (writePrettyOld(a, new StringWriter)(formats)).toString
 
-  /** Serialize to Writer (pretty format).
+  /**
+   * Serialize to Writer (pretty format).
    */
   def writePrettyOld[A <: AnyRef, W <: Writer](a: A, out: W)(implicit formats: Formats): W = {
     Printer.pretty(JsonMethods.render(Extraction.decompose(a)(formats)), out)
   }
 
-  /** Deserialize from a String.
+  /**
+   * Deserialize from a String.
    */
   def read[A](json: String)(implicit formats: Formats, mf: Manifest[A]): A = {
     JsonParser.parse(json, formats.wantsBigDecimal).extract(formats, mf)
@@ -75,13 +83,15 @@ object Serialization extends Serialization  {
   def read[A](json: String, useBigDecimalForDouble: Boolean)(implicit formats: Formats, mf: Manifest[A]): A =
     if (useBigDecimalForDouble) read(json)(formats.withBigDecimal, mf) else read(json)(formats.withDouble, mf)
 
-  /** Deserialize from a Reader.
+  /**
+   * Deserialize from a Reader.
    */
   @deprecated("You can use formats now to indicate you want to use decimals instead of doubles", "3.2.0")
   def read[A](in: Reader, useBigDecimalForDouble: Boolean)(implicit formats: Formats, mf: Manifest[A]): A =
     if (useBigDecimalForDouble) read(in)(formats.withBigDecimal, mf) else read(in)(formats.withDouble, mf)
 
-  /** Deserialize from a Reader.
+  /**
+   * Deserialize from a Reader.
    */
   def read[A](in: Reader)(implicit formats: Formats, mf: Manifest[A]): A = {
     JsonParser.parse(in, formats.wantsBigDecimal).extract(formats, mf)

@@ -16,12 +16,14 @@
 
 package org.json4s
 
-/** Functions to convert between JSON and XML.
+/**
+ * Functions to convert between JSON and XML.
  */
 object Xml {
   import scala.xml._
 
-  /** Convert given XML to JSON.
+  /**
+   * Convert given XML to JSON.
    * <p>
    * Following rules are used in conversion.
    * <ul>
@@ -114,13 +116,16 @@ object Xml {
     }
 
     def mkFields(xs: List[(String, XElem)]) =
-      xs.flatMap { case (name, value) => (value, toJValue(value)) match {
-        // This special case is needed to flatten nested objects which resulted from
-        // XML attributes. Flattening keeps transformation more predictable.
-        // <a><foo id="1">x</foo></a> -> {"a":{"foo":{"foo":"x","id":"1"}}} vs
-        // <a><foo id="1">x</foo></a> -> {"a":{"foo":"x","id":"1"}}
-        case (XLeaf(v, x :: xs), o: JObject) => o.obj
-        case (_, json) => JField(name, json) :: Nil }}
+      xs.flatMap {
+        case (name, value) => (value, toJValue(value)) match {
+          // This special case is needed to flatten nested objects which resulted from
+          // XML attributes. Flattening keeps transformation more predictable.
+          // <a><foo id="1">x</foo></a> -> {"a":{"foo":{"foo":"x","id":"1"}}} vs
+          // <a><foo id="1">x</foo></a> -> {"a":{"foo":"x","id":"1"}}
+          case (XLeaf(v, x :: xs), o: JObject) => o.obj
+          case (_, json) => JField(name, json) :: Nil
+        }
+      }
 
     def buildNodes(xml: NodeSeq): List[XElem] = xml match {
       case n: Node =>
@@ -148,7 +153,8 @@ object Xml {
     }
   }
 
-  /** Convert given JSON to XML.
+  /**
+   * Convert given JSON to XML.
    * <p>
    * Following rules are used in conversion.
    * <ul>
@@ -186,7 +192,7 @@ object Xml {
     }
   }
 
-  private[json4s] class XmlNode(name: String, children: Seq[Node]) extends Elem(null, name, xml.Null, TopScope, children :_*)
+  private[json4s] class XmlNode(name: String, children: Seq[Node]) extends Elem(null, name, xml.Null, TopScope, children: _*)
 
   private[json4s] class XmlElem(name: String, value: String) extends Elem(null, name, xml.Null, TopScope, Text(value))
 }

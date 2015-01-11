@@ -1,7 +1,7 @@
 package org.json4s
 
-import com.thoughtworks.paranamer.{BytecodeReadingParanamer, CachingParanamer}
-import java.lang.reflect.{Constructor, ParameterizedType, Type}
+import com.thoughtworks.paranamer.{ BytecodeReadingParanamer, CachingParanamer }
+import java.lang.reflect.{ Constructor, ParameterizedType, Type }
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.JavaConverters._
 import java.util.Date
@@ -41,7 +41,7 @@ package object reflect {
       }
     }
 
-    def replace(x: A, v: R):R = {
+    def replace(x: A, v: R): R = {
       cache.put(x, v)
       v
     }
@@ -51,8 +51,6 @@ package object reflect {
   private[reflect] val ModuleFieldName = "MODULE$"
   private[reflect] val ClassLoaders = Vector(getClass.getClassLoader)
   private[this] val paranamer = new CachingParanamer(new BytecodeReadingParanamer)
-
-
 
   case class TypeInfo(clazz: Class[_], parameterizedType: Option[ParameterizedType])
 
@@ -79,7 +77,7 @@ package object reflect {
   implicit def classDescribable(t: Class[_])(implicit formats: Formats = DefaultFormats): ReflectorDescribable[Class[_]] = new ReflectorDescribable[Class[_]] {
     val companionClasses: List[(Class[_], AnyRef)] = formats.companions
     val paranamer: ParameterNameReader = formats.parameterNameReader
-    val scalaType: ScalaType =  Reflector.scalaTypeOf(t)
+    val scalaType: ScalaType = Reflector.scalaTypeOf(t)
   }
 
   implicit def stringDescribable(t: String)(implicit formats: Formats = DefaultFormats): ReflectorDescribable[String] = new ReflectorDescribable[String] {

@@ -18,7 +18,8 @@ package org.json4s
 
 import JsonAST._
 
-/** A difference between two JSONs (j1 diff j2).
+/**
+ * A difference between two JSONs (j1 diff j2).
  * @param changed what has changed from j1 to j2
  * @param added what has been added to j2
  * @param deleted what has been deleted from j1
@@ -41,11 +42,13 @@ case class Diff(changed: JValue, added: JValue, deleted: JValue) {
   }
 }
 
-/** Computes a diff between two JSONs.
+/**
+ * Computes a diff between two JSONs.
  */
 object Diff {
 
-  /** Return a diff.
+  /**
+   * Return a diff.
    * <p>
    * Example:<pre>
    * val Diff(c, a, d) = ("name", "joe") ~ ("age", 10) diff ("fname", "joe") ~ ("age", 11)
@@ -99,7 +102,8 @@ object Diff {
   }
 
   private[json4s] trait Diffable { this: org.json4s.JsonAST.JValue =>
-    /** Return a diff.
+    /**
+     * Return a diff.
      * @see org.json4s.Diff#diff
      */
     def diff(other: JValue) = Diff.diff(this, other)

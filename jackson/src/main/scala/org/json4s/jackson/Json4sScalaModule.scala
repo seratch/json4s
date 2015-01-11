@@ -11,9 +11,9 @@ object Json4sModule {
     val groupId = BuildInfo.organization
     val artifactId = BuildInfo.name
     BuildInfo.version match {
-      case VersionRegex(major,minor,patchOpt,snapOpt) => {
+      case VersionRegex(major, minor, patchOpt, snapOpt) => {
         val patch = Option(patchOpt) map (_.toInt) getOrElse 0
-        new Version(major.toInt,minor.toInt,patch,snapOpt,groupId,artifactId)
+        new Version(major.toInt, minor.toInt, patch, snapOpt, groupId, artifactId)
       }
       case _ => Version.unknownVersion()
     }

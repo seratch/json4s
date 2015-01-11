@@ -16,29 +16,31 @@
 
 package org.json4s
 
-import java.lang.{Integer => JavaInteger, Long => JavaLong, Short => JavaShort, Byte => JavaByte, Boolean => JavaBoolean, Double => JavaDouble, Float => JavaFloat}
-import java.math.{BigDecimal => JavaBigDecimal}
+import java.lang.{ Integer => JavaInteger, Long => JavaLong, Short => JavaShort, Byte => JavaByte, Boolean => JavaBoolean, Double => JavaDouble, Float => JavaFloat }
+import java.math.{ BigDecimal => JavaBigDecimal }
 import java.util.Date
 import java.sql.Timestamp
 import reflect._
 import scala.reflect.Manifest
 import scala.collection.JavaConverters._
 
-/** Function to extract values from JSON AST using case classes.
+/**
+ * Function to extract values from JSON AST using case classes.
  *
  *  See: ExtractionExamples.scala
  */
 object Extraction {
 
-  /** Extract a case class from JSON.
+  /**
+   * Extract a case class from JSON.
    * @see org.json4s.JsonAST.JValue#extract
    * @throws MappingException is thrown if extraction fails
    */
   def extract[A](json: JValue)(implicit formats: Formats, mf: Manifest[A]): A = {
-//    def allTypes(mf: Manifest[_]): List[Class[_]] = mf.erasure :: (mf.typeArguments flatMap allTypes)
+    //    def allTypes(mf: Manifest[_]): List[Class[_]] = mf.erasure :: (mf.typeArguments flatMap allTypes)
     try {
-//      val types = allTypes(mf)
-//      println("the types: %s" format types)
+      //      val types = allTypes(mf)
+      //      println("the types: %s" format types)
       extract(json, Reflector.scalaTypeOf[A]).asInstanceOf[A]
     } catch {
       case e: MappingException => throw e
@@ -47,7 +49,8 @@ object Extraction {
     }
   }
 
-  /** Extract a case class from JSON.
+  /**
+   * Extract a case class from JSON.
    * @see org.json4s.JsonAST.JValue#extract
    */
   def extractOpt[A](json: JValue)(implicit formats: Formats, mf: Manifest[A]): Option[A] =
@@ -55,7 +58,8 @@ object Extraction {
 
   def extract(json: JValue, target: TypeInfo)(implicit formats: Formats): Any = extract(json, ScalaType(target))
 
-  /** Decompose a case class into JSON.
+  /**
+   * Decompose a case class into JSON.
    * <p>
    * Example:<pre>
    * case class Person(name: String, age: Int)
@@ -64,15 +68,16 @@ object Extraction {
    * </pre>
    */
   def decomposeWithBuilder[T](a: Any, builder: JsonWriter[T])(implicit formats: Formats): T = {
-    internalDecomposeWithBuilder(a,builder)(formats)
+    internalDecomposeWithBuilder(a, builder)(formats)
     builder.result
   }
 
-  /** Decompose a case class into JSON.
+  /**
+   * Decompose a case class into JSON.
    *
    * This is broken out to avoid calling builder.result when we return from recusion
    */
-  def internalDecomposeWithBuilder[T](a: Any, builder: JsonWriter[T])(implicit formats: Formats):Unit = {
+  def internalDecomposeWithBuilder[T](a: Any, builder: JsonWriter[T])(implicit formats: Formats): Unit = {
     val current = builder
     def prependTypeHint(clazz: Class[_], o: JObject) =
       JObject(JField(formats.typeHintFieldName, JString(formats.typeHints.hintFor(clazz))) :: o.obj)
@@ -96,7 +101,7 @@ object Extraction {
         f.string(formats.typeHints.hintFor(k))
       }
       val fs = formats.fieldSerializer(k)
-      while(iter.hasNext) {
+      while (iter.hasNext) {
         val prop = iter.next()
 
         val fieldVal = prop.get(any)
@@ -127,7 +132,7 @@ object Extraction {
       } else if (classOf[scala.collection.Map[_, _]].isAssignableFrom(k)) {
         val obj = current.startObject()
         val iter = any.asInstanceOf[scala.collection.Map[_, _]].iterator
-        while(iter.hasNext) {
+        while (iter.hasNext) {
           iter.next() match {
             case (k: String, v) => addField(k, v, obj)
             case (k: Symbol, v) => addField(k.name, v, obj)
@@ -141,7 +146,7 @@ object Extraction {
             case (k: JavaShort, v) => addField(k.toString, v, obj)
             case (k, v) => {
               val customKeySerializer = formats.customKeySerializer(formats)
-              if(customKeySerializer.isDefinedAt(k)) {
+              if (customKeySerializer.isDefinedAt(k)) {
                 addField(customKeySerializer(k), v, obj)
               } else {
                 fail("Do not know how to serialize key of type " + k.getClass + ". " +
@@ -154,17 +159,17 @@ object Extraction {
       } else if (classOf[Iterable[_]].isAssignableFrom(k)) {
         val arr = current.startArray()
         val iter = any.asInstanceOf[Iterable[_]].iterator
-        while(iter.hasNext) { internalDecomposeWithBuilder(iter.next(), arr) }
+        while (iter.hasNext) { internalDecomposeWithBuilder(iter.next(), arr) }
         arr.endArray()
       } else if (classOf[java.util.Collection[_]].isAssignableFrom(k)) {
         val arr = current.startArray()
         val iter = any.asInstanceOf[java.util.Collection[_]].iterator
-        while(iter.hasNext) { internalDecomposeWithBuilder(iter.next(), arr) }
+        while (iter.hasNext) { internalDecomposeWithBuilder(iter.next(), arr) }
         arr.endArray()
       } else if (k.isArray) {
         val arr = current.startArray()
         val iter = any.asInstanceOf[Array[_]].iterator
-        while(iter.hasNext) { internalDecomposeWithBuilder(iter.next(), arr) }
+        while (iter.hasNext) { internalDecomposeWithBuilder(iter.next(), arr) }
         arr.endArray()
       } else if (classOf[Option[_]].isAssignableFrom(k)) {
         val v = any.asInstanceOf[Option[_]]
@@ -198,7 +203,8 @@ object Extraction {
     } else current addJValue prependTypeHint(any.getClass, serializer(any))
   }
 
-  /** Decompose a case class into JSON.
+  /**
+   * Decompose a case class into JSON.
    * <p>
    * Example:<pre>
    * case class Person(name: String, age: Int)
@@ -232,29 +238,30 @@ object Extraction {
     case _ => sys.error("not a primitive " + a.asInstanceOf[AnyRef].getClass)
   }
 
-
-  /** Flattens the JSON to a key/value map.
+  /**
+   * Flattens the JSON to a key/value map.
    */
   def flatten(json: JValue): Map[String, String] = {
     def escapePath(str: String) = str
 
     def flatten0(path: String, json: JValue): Map[String, String] = {
       json match {
-        case JNothing | JNull    => Map()
-        case JString(s)          => Map(path -> ("\"" + ParserUtil.quote(s) + "\""))
-        case JDouble(num)        => Map(path -> num.toString)
-        case JDecimal(num)       => Map(path -> num.toString)
-        case JInt(num)           => Map(path -> num.toString)
-        case JBool(value)        => Map(path -> value.toString)
-//        case JField(name, value) => flatten0(path + escapePath(name), value)
-        case JObject(obj)        => obj.foldLeft(Map[String, String]()) { case (map, (name, value)) =>
-          map ++ flatten0(path + "." + escapePath(name), value)
+        case JNothing | JNull => Map()
+        case JString(s) => Map(path -> ("\"" + ParserUtil.quote(s) + "\""))
+        case JDouble(num) => Map(path -> num.toString)
+        case JDecimal(num) => Map(path -> num.toString)
+        case JInt(num) => Map(path -> num.toString)
+        case JBool(value) => Map(path -> value.toString)
+        //        case JField(name, value) => flatten0(path + escapePath(name), value)
+        case JObject(obj) => obj.foldLeft(Map[String, String]()) {
+          case (map, (name, value)) =>
+            map ++ flatten0(path + "." + escapePath(name), value)
         }
-        case JArray(arr)         => arr.length match {
+        case JArray(arr) => arr.length match {
           case 0 => Map(path -> "[]")
           case _ => arr.foldLeft((Map[String, String](), 0)) {
-                      (tuple, value) => (tuple._1 ++ flatten0(path + "[" + tuple._2 + "]", value), tuple._2 + 1)
-                    }._1
+            (tuple, value) => (tuple._1 ++ flatten0(path + "[" + tuple._2 + "]", value), tuple._2 + 1)
+          }._1
         }
       }
     }
@@ -262,27 +269,26 @@ object Extraction {
     flatten0("", json)
   }
 
-
-  /** Unflattens a key/value map to a JSON object.
+  /**
+   * Unflattens a key/value map to a JSON object.
    */
   def unflatten(map: Map[String, String], useBigDecimalForDouble: Boolean = false): JValue = {
     import scala.util.matching.Regex
 
     def extractValue(value: String): JValue = value.toLowerCase match {
-      case ""      => JNothing
-      case "null"  => JNull
-      case "true"  => JBool(true)
+      case "" => JNothing
+      case "null" => JNull
+      case "true" => JBool(true)
       case "false" => JBool(false)
-      case "[]"    => JArray(Nil)
-      case x @ _   =>
+      case "[]" => JArray(Nil)
+      case x @ _ =>
         if (value.charAt(0).isDigit) {
           if (value.indexOf('.') == -1) JInt(BigInt(value))
           else {
             if (!useBigDecimalForDouble) JDouble(ParserUtil.parseDouble(value))
             else JDecimal(BigDecimal(value))
           }
-        }
-        else JString(ParserUtil.unquote(value.substring(1)))
+        } else JString(ParserUtil.unquote(value.substring(1)))
     }
 
     def submap(prefix: String): Map[String, String] =
@@ -300,18 +306,18 @@ object Extraction {
       (set, key) =>
         key match {
           case ArrayProp(p, f, i) => set + p
-          case OtherProp(p, f)    => set + p
-          case ArrayElem(p, i)    => set + p
-          case x @ _              => set + x
+          case OtherProp(p, f) => set + p
+          case ArrayElem(p, i) => set + p
+          case x @ _ => set + x
         }
     }.toList.sortWith(_ < _) // Sort is necessary to get array order right
 
     uniquePaths.foldLeft[JValue](JNothing) { (jvalue, key) =>
       jvalue.merge(key match {
         case ArrayProp(p, f, i) => JObject(List(JField(f, unflatten(submap(key)))))
-        case ArrayElem(p, i)    => JArray(List(unflatten(submap(key))))
-        case OtherProp(p, f)    => JObject(List(JField(f, unflatten(submap(key)))))
-        case ""                 => extractValue(map(key))
+        case ArrayElem(p, i) => JArray(List(unflatten(submap(key))))
+        case OtherProp(p, f) => JObject(List(JField(f, unflatten(submap(key)))))
+        case "" => extractValue(map(key))
       })
     }
   }
@@ -337,7 +343,7 @@ object Extraction {
       }
     } else if (scalaType.isCollection) {
       customOrElse(scalaType, json)(new CollectionBuilder(_, scalaType).result)
-    } else if (classOf[(_, _)].isAssignableFrom(scalaType.erasure) && (classOf[String].isAssignableFrom(scalaType.typeArgs.head.erasure) || classOf[Symbol].isAssignableFrom(scalaType.typeArgs.head.erasure) )) {
+    } else if (classOf[(_, _)].isAssignableFrom(scalaType.erasure) && (classOf[String].isAssignableFrom(scalaType.typeArgs.head.erasure) || classOf[Symbol].isAssignableFrom(scalaType.typeArgs.head.erasure))) {
       val ta = scalaType.typeArgs(1)
       json match {
         case JObject(xs :: Nil) =>
@@ -357,21 +363,23 @@ object Extraction {
     private[this] val typeArg = tpe.typeArgs.head
     private[this] def mkCollection(constructor: Array[_] => Any) = {
       val array: Array[_] = json match {
-        case JArray(arr)      => arr.map(extract(_, typeArg)).toArray
+        case JArray(arr) => arr.map(extract(_, typeArg)).toArray
         case JNothing | JNull => Array[AnyRef]()
-        case x                => fail("Expected collection but got " + x + " for root " + json + " and mapping " + tpe)
+        case x => fail("Expected collection but got " + x + " for root " + json + " and mapping " + tpe)
       }
 
       constructor(array)
     }
 
     private[this] def mkTypedArray(a: Array[_]) = {
-      import java.lang.reflect.Array.{newInstance => newArray}
+      import java.lang.reflect.Array.{ newInstance => newArray }
 
-      a.foldLeft((newArray(typeArg.erasure, a.length), 0)) { (tuple, e) => {
-        java.lang.reflect.Array.set(tuple._1, tuple._2, e)
-        (tuple._1, tuple._2 + 1)
-      }}._1
+      a.foldLeft((newArray(typeArg.erasure, a.length), 0)) { (tuple, e) =>
+        {
+          java.lang.reflect.Array.set(tuple._1, tuple._2, e)
+          (tuple._1, tuple._2 + 1)
+        }
+      }._1
     }
 
     def result: Any = {
@@ -396,10 +404,10 @@ object Extraction {
             case (Nil, _) => None
             case (t, f) => Some((t.head._2.values.toString, f))
           }
-//          val grouped = fs groupBy (_._1 == formats.typeHintFieldName)
-//          if (grouped.isDefinedAt(true))
-//            Some((grouped(true).head._2.values.toString, grouped.get(false).getOrElse(Nil)))
-//          else None
+          //          val grouped = fs groupBy (_._1 == formats.typeHintFieldName)
+          //          if (grouped.isDefinedAt(true))
+          //            Some((grouped(true).head._2.values.toString, grouped.get(false).getOrElse(Nil)))
+          //          else None
         }
     }
     private[this] var _constructor: ConstructorDescriptor = null
@@ -412,7 +420,7 @@ object Extraction {
               case JObject(fs) => fs.map(_._1)
               case _ => Nil
             }
-//            println("Finding argument names: %s in constructors: %s" format (argNames, descr.constructors.map(_.params.map(_.name))))
+            //            println("Finding argument names: %s in constructors: %s" format (argNames, descr.constructors.map(_.params.map(_.name))))
             val r = descr.bestMatching(argNames)
             r.getOrElse(fail("No constructor for type " + descr.erasure + ", " + json))
           }
@@ -432,8 +440,9 @@ object Extraction {
           }).toMap
 
           fieldsToSet foreach { prop =>
-            jsonSerializers get prop.name foreach { case (_, v) =>
-              prop.set(a, extract(v, prop.returnType))
+            jsonSerializers get prop.name foreach {
+              case (_, v) =>
+                prop.set(a, extract(v, prop.returnType))
             }
           }
         }
@@ -450,16 +459,15 @@ object Extraction {
           val x = if (json == JNothing && default.isDefined) default.get() else extract(json, descr.argType)
           if (descr.isOptional) { if (x == null) defv(None) else x }
           else if (x == null) {
-            if(!default.isDefined && descr.argType <:< ScalaType(manifest[AnyVal])) {
+            if (!default.isDefined && descr.argType <:< ScalaType(manifest[AnyVal])) {
               throw new MappingException("Null invalid value for a sub-type of AnyVal")
             } else {
               defv(x)
             }
-          }
-          else x
+          } else x
         } catch {
           case e @ MappingException(msg, _) =>
-            if (descr.isOptional  && !formats.strictOptionParsing) defv(None) else fail("No usable value for " + descr.name + "\n" + msg, e)
+            if (descr.isOptional && !formats.strictOptionParsing) defv(None) else fail("No usable value for " + descr.name + "\n" + msg, e)
         }
       }
     }
@@ -491,11 +499,11 @@ object Extraction {
           setFields(instance.asInstanceOf[AnyRef])
         }
       } catch {
-        case e @ (_:IllegalArgumentException | _:InstantiationException) =>
+        case e @ (_: IllegalArgumentException | _: InstantiationException) =>
           fail("Parsed JSON values do not match with class constructor\nargs=" +
-               args.mkString(",") + "\narg types=" + args.map(a => if (a != null)
-                 a.asInstanceOf[AnyRef].getClass.getName else "null").mkString(",") +
-               "\nconstructor=" + jconstructor)
+            args.mkString(",") + "\narg types=" + args.map(a => if (a != null)
+              a.asInstanceOf[AnyRef].getClass.getName else "null").mkString(",") +
+            "\nconstructor=" + jconstructor)
       }
     }
 
@@ -509,7 +517,7 @@ object Extraction {
     }
 
     def result: Any =
-      customOrElse(descr.erasure, json){
+      customOrElse(descr.erasure, json) {
         case JNull if formats.allowNull => null
         case JNull if !formats.allowNull =>
           fail("Did not find value which can be converted into " + descr.fullName)
@@ -543,7 +551,7 @@ object Extraction {
       case _ =>
         val deserializer = formats.customKeyDeserializer(formats)
         val typeInfo = TypeInfo(targetType, None)
-        if(deserializer.isDefinedAt((typeInfo, key))) {
+        if (deserializer.isDefinedAt((typeInfo, key))) {
           deserializer((typeInfo, key))
         } else {
           fail("Do not know how to deserialize key of type " + targetType + ". Consider implementing a CustomKeyDeserializer.")

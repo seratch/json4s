@@ -4,7 +4,7 @@ import xml.Group
 //import sbtscalashim.Plugin._
 import sbtbuildinfo.Plugin._
 import com.typesafe.sbt.SbtStartScript
-
+import com.typesafe.sbt.SbtScalariform._
 
 object build extends Build {
   import Dependencies._
@@ -62,7 +62,7 @@ object build extends Build {
     publishSetting,
     resolvers ++= Seq(Opts.resolver.sonatypeSnapshots, Opts.resolver.sonatypeReleases),
     crossVersion := CrossVersion.binary
-  )
+  ) ++ scalariformSettings
 
   lazy val root = Project(
     id = "json4s",

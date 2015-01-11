@@ -307,7 +307,7 @@ class MonadicJValue(jv: JValue) {
    * </pre>
    */
   def remove(p: JValue ⇒ Boolean): JValue = {
-    if(p(jv)) JNothing
+    if (p(jv)) JNothing
     else jv transform {
       case JObject(l) => JObject(l.filterNot(f ⇒ p(f._2)))
       case JArray(l) => JArray(l.filterNot(p))
@@ -338,13 +338,12 @@ class MonadicJValue(jv: JValue) {
    * Camelize all the keys in this [[org.json4s.JsonAST.JValue]]
    */
   def camelizeKeys = rewriteJsonAST(camelize = true)
-  
+
   /**
    * Underscore all the keys in this [[org.json4s.JsonAST.JValue]]
    */
   def snakizeKeys = rewriteJsonAST(camelize = false)
 
-      
   /**
    * Underscore all the keys in this [[org.json4s.JsonAST.JValue]]
    */

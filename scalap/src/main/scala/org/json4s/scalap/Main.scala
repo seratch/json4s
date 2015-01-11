@@ -8,7 +8,7 @@
 package org.json4s.scalap
 
 object Main {
-  val SCALA_SIG            = "ScalaSig"
+  val SCALA_SIG = "ScalaSig"
   val SCALA_SIG_ANNOTATION = "Lscala/reflect/ScalaSignature;"
-  val BYTES_VALUE          = "bytes"
+  val BYTES_VALUE = "bytes"
 }

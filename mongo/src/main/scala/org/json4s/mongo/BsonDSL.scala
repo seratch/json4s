@@ -18,14 +18,12 @@ package org.json4s
 package mongo
 
 import scala.util.matching.Regex
-import java.util.{Date, UUID}
+import java.util.{ Date, UUID }
 import java.util.regex.Pattern
 
 import org.bson.types.ObjectId
 
-
-trait BsonDSL extends JsonDSL{
-
+trait BsonDSL extends JsonDSL {
 
   implicit def objectid2jvalue(oid: ObjectId): JValue = Meta.objectIdAsJValue(oid)
   implicit def pattern2jvalue(p: Pattern): JValue = Meta.patternAsJValue(p)

@@ -17,30 +17,28 @@
 package org
 
 package object json4s {
-  
 
-
-  type JValue   = JsonAST.JValue
-  val  JNothing = JsonAST.JNothing
-  val  JNull    = JsonAST.JNull
-  type JString  = JsonAST.JString
-  val  JString  = JsonAST.JString
-  type JDouble  = JsonAST.JDouble
-  val  JDouble  = JsonAST.JDouble
+  type JValue = JsonAST.JValue
+  val JNothing = JsonAST.JNothing
+  val JNull = JsonAST.JNull
+  type JString = JsonAST.JString
+  val JString = JsonAST.JString
+  type JDouble = JsonAST.JDouble
+  val JDouble = JsonAST.JDouble
   type JDecimal = JsonAST.JDecimal
-  val  JDecimal = JsonAST.JDecimal
-  type JInt     = JsonAST.JInt
-  val  JInt     = JsonAST.JInt
-  type JBool    = JsonAST.JBool
-  val  JBool    = JsonAST.JBool
-  type JField   = JsonAST.JField
-  val  JField   = JsonAST.JField
-  type JObject  = JsonAST.JObject
-  val  JObject  = JsonAST.JObject
-  type JArray   = JsonAST.JArray
-  val  JArray   = JsonAST.JArray
+  val JDecimal = JsonAST.JDecimal
+  type JInt = JsonAST.JInt
+  val JInt = JsonAST.JInt
+  type JBool = JsonAST.JBool
+  val JBool = JsonAST.JBool
+  type JField = JsonAST.JField
+  val JField = JsonAST.JField
+  type JObject = JsonAST.JObject
+  val JObject = JsonAST.JObject
+  type JArray = JsonAST.JArray
+  val JArray = JsonAST.JArray
 
-  val  TypeInfo = reflect.TypeInfo
+  val TypeInfo = reflect.TypeInfo
   type TypeInfo = reflect.TypeInfo
 
   trait ParameterNameReader extends reflect.ParameterNameReader

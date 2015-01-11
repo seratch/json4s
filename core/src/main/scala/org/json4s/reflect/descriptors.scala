@@ -1,7 +1,7 @@
 package org.json4s
 package reflect
 
-import java.lang.reflect.{Constructor => JConstructor, Type, Field, TypeVariable}
+import java.lang.reflect.{ Constructor => JConstructor, Type, Field, TypeVariable }
 import scala._
 
 sealed trait Descriptor
@@ -73,9 +73,9 @@ object ScalaType {
     override val isPrimitive = true
   }
   private class CopiedScalaType(
-                  mf: Manifest[_],
-                  private[this] var _typeVars: Map[TypeVariable[_], ScalaType],
-                  override val isPrimitive: Boolean) extends ScalaType(mf) {
+      mf: Manifest[_],
+      private[this] var _typeVars: Map[TypeVariable[_], ScalaType],
+      override val isPrimitive: Boolean) extends ScalaType(mf) {
 
     override def typeVars: Map[TypeVariable[_], ScalaType] = {
       if (_typeVars == null)
@@ -102,7 +102,6 @@ class ScalaType(private val manifest: Manifest[_]) extends Equals {
         erasure.getTypeParameters.map(_.asInstanceOf[TypeVariable[_]]).zip(typeArgs)
     _typeVars
   }
-
 
   val isArray: Boolean = erasure.isArray
 
@@ -203,11 +202,11 @@ case class ClassDescriptor(simpleName: String, fullName: String, erasure: ScalaT
     val names = Set(argNames: _*)
     def countOptionals(args: List[ConstructorParamDescriptor]) =
       args.foldLeft(0)((n, x) => {
-        if (x.isOptional) n+1 else n
+        if (x.isOptional) n + 1 else n
       })
     def score(args: List[ConstructorParamDescriptor]) =
       args.foldLeft(0)((s, arg) =>
-        if (names.contains(arg.name)) s+1
+        if (names.contains(arg.name)) s + 1
         else if (arg.isOptional) s
         else -100
       )

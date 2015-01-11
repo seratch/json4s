@@ -29,7 +29,8 @@ object ByteCode {
   }
 }
 
-/** Represents a chunk of raw bytecode.  Used as input for the parsers
+/**
+ * Represents a chunk of raw bytecode.  Used as input for the parsers
  */
 class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
 
@@ -53,8 +54,8 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
 
   override def toString = length + " bytes"
 
-  def toInt = fold(0) { (x, b) => (x << 8) + (b & 0xFF)}
-  def toLong = fold(0L) { (x, b) => (x << 8) + (b & 0xFF)}
+  def toInt = fold(0) { (x, b) => (x << 8) + (b & 0xFF) }
+  def toLong = fold(0L) { (x, b) => (x << 8) + (b & 0xFF) }
 
   /**
    * Transforms array subsequence of the current buffer into the UTF8 String and
@@ -76,8 +77,9 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
  */
 case class StringBytesPair(string: String, bytes: Array[Byte])
 
-/** Provides rules for parsing byte-code.
-*/
+/**
+ * Provides rules for parsing byte-code.
+ */
 trait ByteCodeReader extends RulesWithState {
   type S = ByteCode
   type Parser[A] = Rule[A, String]
@@ -96,7 +98,7 @@ object ClassFileParser extends ByteCodeReader {
   def parseAnnotations(byteCode: ByteCode) = expect(annotations)(byteCode)
 
   val magicNumber = (u4 filter (_ == 0xCAFEBABE)) | error("Not a valid class file")
-  val version = u2 ~ u2 ^^ { case minor ~ major => (major,  minor) }
+  val version = u2 ~ u2 ^^ { case minor ~ major => (major, minor) }
   val constantPool = (u2 ^^ ConstantPool) >> repeatUntil(constantPoolEntry)(_ isFull)
 
   // NOTE currently most constants just evaluate to a string description
@@ -144,7 +146,7 @@ object ClassFileParser extends ByteCodeReader {
   case class ArrayValue(values: Seq[ElementValue]) extends ElementValue
 
   def element_value: Parser[ElementValue] = u1 >> {
-    case 'B'|'C'|'D'|'F'|'I'|'J'|'S'|'Z'|'s' => u2 ^^ ConstValueIndex
+    case 'B' | 'C' | 'D' | 'F' | 'I' | 'J' | 'S' | 'Z' | 's' => u2 ^^ ConstValueIndex
     case 'e' => u2 ~ u2 ^~^ EnumConstValue
     case 'c' => u2 ^^ ClassInfoIndex
     case '@' => annotation //nested annotation
@@ -193,11 +195,11 @@ case class ClassFile(
 
   def constantWrapped(index: Int) = header.constants(index)
 
-  def attribute(name: String) = attributes.find {attrib => constant(attrib.nameIndex) == name }
+  def attribute(name: String) = attributes.find { attrib => constant(attrib.nameIndex) == name }
 
   val RUNTIME_VISIBLE_ANNOTATIONS = "RuntimeVisibleAnnotations"
   def annotations = (attributes.find(attr => constant(attr.nameIndex) == RUNTIME_VISIBLE_ANNOTATIONS)
-          .map(attr => ClassFileParser.parseAnnotations(attr.byteCode)))
+    .map(attr => ClassFileParser.parseAnnotations(attr.byteCode)))
 
   def annotation(name: String) = annotations.flatMap(seq => seq.find(annot => constant(annot.typeIndex) == name))
 }

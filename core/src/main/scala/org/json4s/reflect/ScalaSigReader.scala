@@ -50,7 +50,7 @@ object ScalaSigReader {
       sig.topLevelClasses.find(_.symbolInfo.name == name).orElse {
         sig.topLevelObjects.map { obj =>
           val t = obj.infoType.asInstanceOf[TypeRefType]
-          t.symbol.children collect { case c: ClassSymbol => c } find(_.symbolInfo.name == name)
+          t.symbol.children collect { case c: ClassSymbol => c } find (_.symbolInfo.name == name)
         }.head
       }
     }
@@ -62,8 +62,6 @@ object ScalaSigReader {
     }
     ms.find(m => m.children.map(_.name) == argNames)
   }
-
-
 
   def findFields(c: ClassSymbol): Seq[MethodSymbol] =
     c.children collect {
@@ -127,14 +125,14 @@ object ScalaSigReader {
   }
 
   private def toClass(s: Symbol) = s.path match {
-    case "scala.Short"   => classOf[Short]
-    case "scala.Int"     => classOf[Int]
-    case "scala.Long"    => classOf[Long]
+    case "scala.Short" => classOf[Short]
+    case "scala.Int" => classOf[Int]
+    case "scala.Long" => classOf[Long]
     case "scala.Boolean" => classOf[Boolean]
-    case "scala.Float"   => classOf[Float]
-    case "scala.Double"  => classOf[Double]
-    case "scala.Byte"    => classOf[Byte]
-    case _               => classOf[AnyRef]
+    case "scala.Float" => classOf[Float]
+    case "scala.Double" => classOf[Double]
+    case "scala.Byte" => classOf[Byte]
+    case _ => classOf[AnyRef]
   }
 
   private[this] def isPrimitive(s: Symbol) = toClass(s) != classOf[AnyRef]
@@ -149,31 +147,31 @@ object ScalaSigReader {
   private[this] def parseClassFileFromByteCode(clazz: Class[_]): Option[ScalaSig] =
     Option(ClassFileParser.parse(ByteCode.forClass(clazz))) flatMap ScalaSigParser.parse
 
-//  def typeRefType(ms: MethodSymbol): TypeRefType = ms.infoType match {
-//    case PolyType(tr @ TypeRefType(_, _, _), _)                           => tr
-//    case NullaryMethodType(tr @ TypeRefType(_, _, _))                     => tr
-//    case NullaryMethodType(ExistentialType(tr @ TypeRefType(_, _, _), _)) => tr
-//  }
+  //  def typeRefType(ms: MethodSymbol): TypeRefType = ms.infoType match {
+  //    case PolyType(tr @ TypeRefType(_, _, _), _)                           => tr
+  //    case NullaryMethodType(tr @ TypeRefType(_, _, _))                     => tr
+  //    case NullaryMethodType(ExistentialType(tr @ TypeRefType(_, _, _), _)) => tr
+  //  }
 
   val ModuleFieldName = "MODULE$"
   val OuterFieldName = "$outer"
   val ClassLoaders = Vector(this.getClass.getClassLoader)
 
-//  def companionClass(clazz: Class[_], classLoaders: Iterable[ClassLoader] = ClassLoaders) = {
-//    val path = if (clazz.getName.endsWith("$")) clazz.getName else "%s$".format(clazz.getName)
-//    resolveClass(path, classLoaders)
-//  }
-//
-//  def companionObject(clazz: Class[_], classLoaders: Iterable[ClassLoader] = ClassLoaders, companion: Option[AnyRef] = None) =
-//    companionClass(clazz, classLoaders) map (_.getField(ModuleFieldName).get(companion.orNull))
-//
-//  def companions(t: java.lang.reflect.Type, companion: Option[AnyRef] = None) = {
-//    val k = Reflector.rawClassOf(t)
-//    val cc = companionClass(k, ClassLoaders)
-//    def safeField(ccc: Class[_]) =
-//      try { Option(ccc.getField(ModuleFieldName)).map(_.get(companion.orNull)) } catch { case _: Throwable => None }
-//    cc map (ccc => (ccc, safeField(ccc)))
-//  }
+  //  def companionClass(clazz: Class[_], classLoaders: Iterable[ClassLoader] = ClassLoaders) = {
+  //    val path = if (clazz.getName.endsWith("$")) clazz.getName else "%s$".format(clazz.getName)
+  //    resolveClass(path, classLoaders)
+  //  }
+  //
+  //  def companionObject(clazz: Class[_], classLoaders: Iterable[ClassLoader] = ClassLoaders, companion: Option[AnyRef] = None) =
+  //    companionClass(clazz, classLoaders) map (_.getField(ModuleFieldName).get(companion.orNull))
+  //
+  //  def companions(t: java.lang.reflect.Type, companion: Option[AnyRef] = None) = {
+  //    val k = Reflector.rawClassOf(t)
+  //    val cc = companionClass(k, ClassLoaders)
+  //    def safeField(ccc: Class[_]) =
+  //      try { Option(ccc.getField(ModuleFieldName)).map(_.get(companion.orNull)) } catch { case _: Throwable => None }
+  //    cc map (ccc => (ccc, safeField(ccc)))
+  //  }
 
   def companions(t: String, companion: Option[AnyRef] = None, classLoaders: Iterable[ClassLoader] = ClassLoaders) = {
     def path(tt: String) = if (tt.endsWith("$")) tt else (tt + "$")
@@ -184,7 +182,7 @@ object ScalaSigReader {
   }
 
   def resolveClass[X <: AnyRef](c: String, classLoaders: Iterable[ClassLoader] = ClassLoaders): Option[Class[X]] = classLoaders match {
-    case Nil      => sys.error("resolveClass: expected 1+ classloaders but received empty list")
+    case Nil => sys.error("resolveClass: expected 1+ classloaders but received empty list")
     case List(cl) => Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
     case many => {
       try {
@@ -193,15 +191,13 @@ object ScalaSigReader {
         while (clazz == null && iter.hasNext) {
           try {
             clazz = Class.forName(c, true, iter.next())
-          }
-          catch {
+          } catch {
             case e: ClassNotFoundException => // keep going, maybe it's in the next one
           }
         }
 
         if (clazz != null) Some(clazz.asInstanceOf[Class[X]]) else None
-      }
-      catch {
+      } catch {
         case _: Throwable => None
       }
     }

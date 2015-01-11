@@ -4,8 +4,7 @@ package jackson
 import collection.JavaConverters._
 import java.util.concurrent.ConcurrentHashMap
 import com.fasterxml.jackson.databind.JavaType
-import com.fasterxml.jackson.databind.`type`.{ArrayType, TypeFactory}
-
+import com.fasterxml.jackson.databind.`type`.{ ArrayType, TypeFactory }
 
 private[jackson] object Types {
   private val cachedTypes = new ConcurrentHashMap[Manifest[_], JavaType]().asScala
@@ -19,7 +18,7 @@ private[jackson] object Types {
     } else {
       factory.constructParametricType(
         manifest.erasure,
-        manifest.typeArguments.map {m => build(factory, m)}.toArray: _*)
+        manifest.typeArguments.map { m => build(factory, m) }.toArray: _*)
     }
   }
 }

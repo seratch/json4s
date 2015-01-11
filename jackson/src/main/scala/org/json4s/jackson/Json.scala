@@ -2,7 +2,7 @@ package org.json4s
 package jackson
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.io.{Writer => JWriter}
+import java.io.{ Writer => JWriter }
 
 object Json {
   private class UtilMethods(override val mapper: ObjectMapper) extends JsonMethods
@@ -12,8 +12,8 @@ object Json {
 class Json(fmts: Formats, mapper: ObjectMapper = JsonMethods.mapper) extends JsonUtil(fmts) {
   private[this] val meth: JsonMethods = new Json.UtilMethods(mapper)
 
-  def write[A <: AnyRef : Manifest](a: A): String = mapper.writeValueAsString(decompose(a))
-  def write[A <: AnyRef : Manifest, W <: JWriter](a: A, out: W): W = {
+  def write[A <: AnyRef: Manifest](a: A): String = mapper.writeValueAsString(decompose(a))
+  def write[A <: AnyRef: Manifest, W <: JWriter](a: A, out: W): W = {
     mapper.writeValue(out, decompose(a))
     out
   }

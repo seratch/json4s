@@ -32,14 +32,12 @@ trait JsonWriter[T] {
 private final class JDoubleJFieldJsonWriter(name: String, parent: JDoubleJObjectJsonWriter) extends JDoubleAstJsonWriter {
   def result: JValue = JNothing
 
-  
   def addNode(node: JValue): JsonWriter[JValue] = parent.addNode(name -> node)
-
 
 }
 private final class JDoubleAstRootJsonWriter extends JDoubleAstJsonWriter {
   private[this] var nodes = List.empty[JValue]
-      
+
   def addNode(node: JValue): JsonWriter[JValue] = {
     nodes ::= node
     this
@@ -51,9 +49,7 @@ private final class JDoubleAstRootJsonWriter extends JDoubleAstJsonWriter {
 private final class JDecimalJFieldJsonWriter(name: String, parent: JDecimalJObjectJsonWriter) extends JDecimalAstJsonWriter {
   def result: JValue = JNothing
 
-
   def addNode(node: JValue): JsonWriter[JValue] = parent.addNode(name -> node)
-
 
 }
 private final class JDecimalAstRootJsonWriter extends JDecimalAstJsonWriter {
@@ -122,7 +118,6 @@ private final class JDoubleJObjectJsonWriter(parent: JsonWriter[JValue]) extends
 
   def startField(name: String): JsonWriter[JValue] = new JDoubleJFieldJsonWriter(name, this)
 
-
   def addJValue(jv: _root_.org.json4s.JValue): JsonWriter[_root_.org.json4s.JValue] =
     sys.error("You have to start a field to be able to end it (addJValue called before startField in a JObject builder)")
 
@@ -183,11 +178,10 @@ private final class JDecimalJObjectJsonWriter(parent: JsonWriter[JValue]) extend
 
   def startField(name: String): JsonWriter[JValue] = new JDecimalJFieldJsonWriter(name, this)
 
-
   def addJValue(jv: _root_.org.json4s.JValue): JsonWriter[_root_.org.json4s.JValue] =
     sys.error("You have to start a field to be able to end it (addJValue called before startField in a JObject builder)")
 
-  def result: JValue = JObject(nodes.toList:_*)
+  def result: JValue = JObject(nodes.toList: _*)
 }
 
 private final class JDoubleJArrayJsonWriter(parent: JsonWriter[JValue]) extends JDoubleAstJsonWriter {
@@ -224,22 +218,21 @@ private final class JDecimalJArrayJsonWriter(parent: JsonWriter[JValue]) extends
   def result: JValue = JArray(nodes.toList)
 }
 private sealed trait JValueJsonWriter extends JsonWriter[JValue] {
-  
+
   def addNode(node: JValue): JsonWriter[JValue]
-  
+
   def endObject(): JsonWriter[JValue] = {
     sys.error("You have to start an object to be able to end it (endObject called before startObject)")
   }
-  
-  
+
   def startField(name: String): JsonWriter[JValue] = {
     sys.error("You have to start an object before starting a field.")
   }
-  
+
   def string(value: String): JsonWriter[JValue] = addNode(JString(value))
-  
+
   def byte(value: Byte): JsonWriter[JValue] = addNode(JInt(value))
-  
+
   def int(value: Int): JsonWriter[JValue] = addNode(JInt(value))
 
   def long(value: Long): JsonWriter[JValue] = addNode(JInt(value))
@@ -255,7 +248,7 @@ private sealed trait JValueJsonWriter extends JsonWriter[JValue] {
   }
 
   def addJValue(jv: JValue): JsonWriter[JValue] = addNode(jv)
-  
+
 }
 private sealed trait JDoubleAstJsonWriter extends JValueJsonWriter {
   def startArray(): JsonWriter[JValue] = {
@@ -265,7 +258,6 @@ private sealed trait JDoubleAstJsonWriter extends JValueJsonWriter {
   def startObject(): JsonWriter[JValue] = {
     new JDoubleJObjectJsonWriter(this)
   }
-
 
   def float(value: Float): JsonWriter[JValue] = addNode(JDouble(value))
 
@@ -293,7 +285,6 @@ private sealed trait JDecimalAstJsonWriter extends JValueJsonWriter {
 
 private final class FieldStreamingJsonWriter[T <: JWriter](name: String, isFirst: Boolean, protected[this] val nodes: T, protected[this] val level: Int, parent: ObjectStreamingJsonWriter[T], protected[this] val pretty: Boolean, protected[this] val spaces: Int) extends StreamingJsonWriter[T] {
   def result: T = nodes
-
 
   override def startArray(): JsonWriter[T] = {
     writeName(hasPretty = true)
@@ -348,7 +339,6 @@ private final class ObjectStreamingJsonWriter[T <: JWriter](protected[this] val 
     parent
   }
 
-
   def addAndQuoteNode(node: String): JsonWriter[T] = {
     if (isFirst) isFirst = false
     else nodes.append(",")
@@ -367,8 +357,7 @@ private final class ObjectStreamingJsonWriter[T <: JWriter](protected[this] val 
 
   override def startObject(): JsonWriter[T] =
     sys.error("You have to start a field to be able to end it (startObject called before startField in a JObject builder)")
-  
-  
+
   override def string(value: String): JsonWriter[T] =
     sys.error("You have to start a field to be able to end it (string called before startField in a JObject builder)")
 
@@ -421,8 +410,7 @@ private final class ArrayStreamingJsonWriter[T <: JWriter](protected[this] val n
     if (!isFirst) {
       nodes.write(',')
       writePretty()
-    }
-    else isFirst = false
+    } else isFirst = false
   }
 
   override def startArray(): JsonWriter[T] = {
@@ -457,7 +445,6 @@ private final class RootStreamingJsonWriter[T <: JWriter](protected[this] val no
     nodes write node
     this
   }
-
 
   def addAndQuoteNode(node: String): JsonWriter[T] = {
     nodes.append("\"")

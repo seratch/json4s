@@ -21,7 +21,6 @@ import _root_.scalaz._
 import std.option._
 import syntax.validation._
 
-
 trait Types {
   type Result[+A] = ValidationNel[Error, A]
 
@@ -31,10 +30,10 @@ trait Types {
   case class UncategorizedError(key: String, desc: String, args: List[Any]) extends Error
 
   case object Fail {
-    def apply[A](key: String, desc: String, args: List[Any]): Result[A] = 
+    def apply[A](key: String, desc: String, args: List[Any]): Result[A] =
       UncategorizedError(key, desc, args).failureNel
 
-    def apply[A](key: String, desc: String): Result[A] = 
+    def apply[A](key: String, desc: String): Result[A] =
       UncategorizedError(key, desc, Nil).failureNel
   }
 
@@ -59,7 +58,7 @@ trait Types {
   def toJSON[A: JSONW](value: A): JValue = implicitly[JSONW[A]].write(value)
 
   def field[A: JSONR](name: String)(json: JValue): Result[A] = json match {
-    case JObject(fs) => 
+    case JObject(fs) =>
       fs.find(_._1 == name)
         .map(f => implicitly[JSONR[A]].read(f._2))
         .orElse(implicitly[JSONR[A]].read(JNothing).fold(_ => none, x => some(Success(x))))
@@ -72,7 +71,7 @@ trait Types {
   implicit def function2EitherNel[A](f: A => Result[A]): (A => EitherNel[A]) = (a: A) => f(a).disjunction
   implicit def kleisli2Result[A](v: Kleisli[EitherNel, JValue, A]): JValue => Result[A] = (v.run _).andThen(_.validation)
 
-  def makeObj(fields: Traversable[(String, JValue)]): JObject = 
+  def makeObj(fields: Traversable[(String, JValue)]): JObject =
     JObject(fields.toList.map { case (n, v) => JField(n, v) })
 }
 

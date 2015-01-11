@@ -20,12 +20,10 @@ package ext
 import org.joda.time._
 import JsonDSL._
 
-
-
 object JodaTimeSerializers {
   def all = List(DurationSerializer, InstantSerializer, DateTimeSerializer,
-                 DateMidnightSerializer, IntervalSerializer(), LocalDateSerializer(),
-                 LocalTimeSerializer(), PeriodSerializer)
+    DateMidnightSerializer, IntervalSerializer(), LocalDateSerializer(),
+    LocalTimeSerializer(), PeriodSerializer)
 }
 
 case object PeriodSerializer extends CustomSerializer[Period](format => (
@@ -115,7 +113,7 @@ private[ext] trait ClassType[A, B] {
   def wrap(a: A)(implicit format: Formats): B
 }
 
-case class ClassSerializer[A : Manifest, B : Manifest](t: ClassType[A, B]) extends Serializer[A] {
+case class ClassSerializer[A: Manifest, B: Manifest](t: ClassType[A, B]) extends Serializer[A] {
   private val Class = implicitly[Manifest[A]].erasure
 
   def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), A] = {

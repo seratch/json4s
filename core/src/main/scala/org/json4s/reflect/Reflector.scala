@@ -1,7 +1,7 @@
 package org.json4s
 package reflect
 
-import java.{util => jutil}
+import java.{ util => jutil }
 import java.lang.reflect._
 import scala.util.control.Exception._
 import scala.collection.JavaConverters._
@@ -18,13 +18,13 @@ object Reflector {
   private[this] val descriptors = new Memo[ScalaType, ObjectDescriptor]
 
   private[this] val primitives = {
-      Set[Type](classOf[String], classOf[Int], classOf[Long], classOf[Double],
-        classOf[Float], classOf[Byte], classOf[BigInt], classOf[Boolean],
-        classOf[Short], classOf[java.lang.Integer], classOf[java.lang.Long],
-        classOf[java.lang.Double], classOf[java.lang.Float], classOf[BigDecimal],
-        classOf[java.lang.Byte], classOf[java.lang.Boolean], classOf[Number],
-        classOf[java.lang.Short], classOf[Date], classOf[Timestamp], classOf[Symbol],
-        classOf[java.math.BigDecimal], classOf[java.math.BigInteger])
+    Set[Type](classOf[String], classOf[Int], classOf[Long], classOf[Double],
+      classOf[Float], classOf[Byte], classOf[BigInt], classOf[Boolean],
+      classOf[Short], classOf[java.lang.Integer], classOf[java.lang.Long],
+      classOf[java.lang.Double], classOf[java.lang.Float], classOf[BigDecimal],
+      classOf[java.lang.Byte], classOf[java.lang.Boolean], classOf[Number],
+      classOf[java.lang.Short], classOf[Date], classOf[Timestamp], classOf[Symbol],
+      classOf[java.math.BigDecimal], classOf[java.math.BigInteger])
   }
 
   def isPrimitive(t: Type, extra: Set[Type] = Set.empty) = (primitives ++ extra) contains t
@@ -43,9 +43,8 @@ object Reflector {
   def describe(st: ReflectorDescribable[_]): ObjectDescriptor =
     descriptors(st.scalaType, createDescriptor(_, st.paranamer, st.companionClasses))
 
-
   def createDescriptor(tpe: ScalaType, paramNameReader: ParameterNameReader = ParanamerReader, companionMappings: List[(Class[_], AnyRef)] = Nil): ObjectDescriptor = {
-//    println("Creating descriptor for " + tpe.fullName + " and paramNameReader: " + paramNameReader + " and mappings: " + companionMappings)
+    //    println("Creating descriptor for " + tpe.fullName + " and paramNameReader: " + paramNameReader + " and mappings: " + companionMappings)
     if (tpe.isPrimitive) PrimitiveDescriptor(tpe)
     else new ClassDescriptorBuilder(tpe, paramNameReader, companionMappings).result
   }
@@ -60,11 +59,12 @@ object Reflector {
       while (ls.hasNext) {
         val f = ls.next()
         val mod = f.getModifiers
-        if (!(Modifier.isStatic(mod) || Modifier.isTransient(mod) || Modifier.isVolatile(mod)  || f.isSynthetic)) {
+        if (!(Modifier.isStatic(mod) || Modifier.isTransient(mod) || Modifier.isVolatile(mod) || f.isSynthetic)) {
           val st = ScalaType(f.getType, f.getGenericType match {
-            case p: ParameterizedType => p.getActualTypeArguments.toSeq.zipWithIndex map { case (cc, i) =>
-              if (cc == classOf[java.lang.Object]) Reflector.scalaTypeOf(ScalaSigReader.readField(f.getName, clazz, i))
-              else Reflector.scalaTypeOf(cc)
+            case p: ParameterizedType => p.getActualTypeArguments.toSeq.zipWithIndex map {
+              case (cc, i) =>
+                if (cc == classOf[java.lang.Object]) Reflector.scalaTypeOf(ScalaSigReader.readField(f.getName, clazz, i))
+                else Reflector.scalaTypeOf(cc)
             }
             case _ => Nil
           })
@@ -83,7 +83,7 @@ object Reflector {
 
     def ctorParamType(name: String, index: Int, owner: ScalaType, ctorParameterNames: List[String], t: Type, container: Option[(ScalaType, List[Int])] = None): ScalaType = {
       val idxes = container.map(_._2.reverse)
-      t  match {
+      t match {
         case v: TypeVariable[_] =>
           val a = owner.typeVars.getOrElse(v, scalaTypeOf(v))
           if (a.erasure == classOf[java.lang.Object]) {
@@ -121,7 +121,7 @@ object Reflector {
         val genParams = Vector(ctor.getGenericParameterTypes: _*)
         val ctorParams = ctorParameterNames.zipWithIndex map {
           case (ScalaSigReader.OuterFieldName, index) =>
-//            println("The result type of the $outer param: " + genParams(0))
+            //            println("The result type of the $outer param: " + genParams(0))
             if (tpe.erasure.getDeclaringClass == null) fail("Classes defined in method bodies are not supported.")
             val mapping = companionMappings.find(_._1 == tpe.erasure).map(_._2)
             companion = mapping map { o =>
@@ -154,7 +154,7 @@ object Reflector {
 
     def result = {
       val constructors = constructorsAndCompanion
-//      println("companion: " + companion)
+      //      println("companion: " + companion)
       ClassDescriptor(tpe.simpleName, tpe.fullName, tpe, companion, constructors, properties)
     }
   }

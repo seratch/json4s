@@ -21,15 +21,14 @@ trait MemoisableRules extends Rules {
   }
 
   override def ruleWithName[In, Out, A, X](name: String, f: In => Result[Out, A, X]) = super.ruleWithName(name, (in: In) => in match {
-      case s: Memoisable => s.memo(name, f(in))
-      case _ => f(in)
-    })
+    case s: Memoisable => s.memo(name, f(in))
+    case _ => f(in)
+  })
 }
 
 trait Memoisable {
   def memo[A](key: AnyRef, a: => A): A
 }
-
 
 object DefaultMemoisable {
   var debug = false
@@ -43,17 +42,16 @@ trait DefaultMemoisable extends Memoisable {
   }
 
   protected def compute[A](key: AnyRef, a: => A): Any = a match {
-    case success: Success[_, _] => onSuccess(key, success); success
+    case success: Success[_, _] =>
+      onSuccess(key, success); success
     case other =>
-      if(DefaultMemoisable.debug) println(key + " -> " + other)
+      if (DefaultMemoisable.debug) println(key + " -> " + other)
       other
   }
 
-  protected def onSuccess[S, T](key: AnyRef,  result: Success[S, T])  {
+  protected def onSuccess[S, T](key: AnyRef, result: Success[S, T]) {
     val Success(out, t) = result
-    if(DefaultMemoisable.debug) println(key + " -> " + t + " (" + out + ")")
+    if (DefaultMemoisable.debug) println(key + " -> " + t + " (" + out + ")")
   }
 }
-
-
 
