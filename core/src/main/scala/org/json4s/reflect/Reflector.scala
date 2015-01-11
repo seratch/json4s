@@ -44,7 +44,6 @@ object Reflector {
     descriptors(st.scalaType, createDescriptor(_, st.paranamer, st.companionClasses))
 
   def createDescriptor(tpe: ScalaType, paramNameReader: ParameterNameReader = ParanamerReader, companionMappings: List[(Class[_], AnyRef)] = Nil): ObjectDescriptor = {
-    //    println("Creating descriptor for " + tpe.fullName + " and paramNameReader: " + paramNameReader + " and mappings: " + companionMappings)
     if (tpe.isPrimitive) PrimitiveDescriptor(tpe)
     else new ClassDescriptorBuilder(tpe, paramNameReader, companionMappings).result
   }
@@ -121,7 +120,6 @@ object Reflector {
         val genParams = Vector(ctor.getGenericParameterTypes: _*)
         val ctorParams = ctorParameterNames.zipWithIndex map {
           case (ScalaSigReader.OuterFieldName, index) =>
-            //            println("The result type of the $outer param: " + genParams(0))
             if (tpe.erasure.getDeclaringClass == null) fail("Classes defined in method bodies are not supported.")
             val mapping = companionMappings.find(_._1 == tpe.erasure).map(_._2)
             companion = mapping map { o =>
@@ -154,7 +152,6 @@ object Reflector {
 
     def result = {
       val constructors = constructorsAndCompanion
-      //      println("companion: " + companion)
       ClassDescriptor(tpe.simpleName, tpe.fullName, tpe, companion, constructors, properties)
     }
   }

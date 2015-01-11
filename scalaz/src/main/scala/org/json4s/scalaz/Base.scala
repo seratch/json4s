@@ -113,10 +113,6 @@ trait Base { this: Types =>
         val m = fs.map(f => fromJSON[A](f._2) map (f._1 -> _))
         val mm = m.sequence[({ type λ[t] = ValidationNel[Error, t] })#λ, (String, A)]
         mm.map(_.toMap)
-      //        val r = m.sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, (String, A)]
-      //        r.map(_.toMap)
-      //        val r = fs.map(f => fromJSON[A](f._2).map(v => (f._1, v))).sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, (String, A)]
-      //        r.map(_.toMap)
       case x => UnexpectedJSONError(x, classOf[JObject]).failureNel
     }
   }

@@ -62,22 +62,6 @@ object SerBench extends Benchmark {
 
     val str = project.toString
 
-    // def strr = str
-    // benchmark("Java serialization (ser)") { serialize(project) }
-    // benchmark("Java noop") { strr }
-    // benchmark("Java toString (ser)") { project.toString }
-    // println()
-
-    // println("### Jackson with Scala module")
-    // benchmark("Jackson serialization (full)") { mapper.readValue(mapper.writeValueAsString(project), classOf[Project])}
-    // benchmark("Jackson serialization (ser)") { mapper.writeValueAsString(project) }
-    // val ser3 = mapper.writeValueAsString(project)
-    // benchmark("Jackson (deser)") { mapper.readValue(ser3, classOf[Project]) }
-    // parseBenchmark("Jackson AST (parse)") { mapper.readValue(json, classOf[JsonNode]) }
-    // val jn = mapper.readValue(json, classOf[JsonNode])
-    // benchmark("Jackson AST (ser)") { mapper.writeValueAsString(jn) }
-    // println()
-
     println("### Json4s direct AST")
     parseBenchmark("json4s-native AST (parse)") { native.JsonMethods.parse(json) }
     parseBenchmark("json4s-jackson AST (parse)") { jackson.JsonMethods.parse(json)}
@@ -116,27 +100,17 @@ object SerBench extends Benchmark {
         new ObjectInputStream(new ByteArrayInputStream(array)).readObject.asInstanceOf[Project]
 
   class Bench(implicit formats: Formats) {
-//    benchmark("Java serialization (full)") { deserialize(serialize(project)) }
 
     benchmark("json4s-native (full)") { native.Serialization.read[Project]( native.Serialization.write(project)) }
     benchmark("json4s-jackson (full)") { jackson.Serialization.read[Project]( jackson.Serialization.write(project)) }
     benchmark("json4s-native (ser)") { native.Serialization.write(project) }
     benchmark("json4s-jackson (ser)") { jackson.Serialization.write(project) }
-//    val ser1 = serialize(project)
+
     val ser2 = native.Serialization.write(project)
-
-//    benchmark("Java serialization (deser)") { deserialize(ser1) }
-
     benchmark("json4s-native (deser)") { native.Serialization.read[Project](ser2) }
     benchmark("json4s-jackson (deser)") { jackson.Serialization.read[Project](ser2) }
 
     benchmark("json4s-native old pretty") { native.Serialization.writePrettyOld(project) }
-//    benchmark("json4s-jackson old pretty") { jackson.Serialization.writePrettyOld(project) }
-
-
-
-
-
   }
 
   class ProjectSerializer extends CustomSerializer[org.json4s.examples.Project](implicit formats => ({
