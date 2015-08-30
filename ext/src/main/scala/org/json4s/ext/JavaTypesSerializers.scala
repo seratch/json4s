@@ -20,16 +20,16 @@ package ext
 import java.util.UUID
 
 object JavaTypesSerializers {
-	val all = List(UUIDSerializer)
+  val all = List(UUIDSerializer)
 }
 
 case object UUIDSerializer extends CustomSerializer[UUID](format => (
-    {
+  {
     case JString(s) => UUID.fromString(s)
-      case JNull => null
-    },
-    {
-      case x: UUID => JString(x.toString)
-    }
-  )
+    case JNull => null
+  },
+  {
+    case x: UUID => JString(x.toString)
+  }
+)
 )

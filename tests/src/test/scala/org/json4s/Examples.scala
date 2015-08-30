@@ -69,7 +69,7 @@ object Examples {
     )
 
   val objArray =
-"""
+    """
 { "name": "joe",
   "address": {
     "street": "Bulevard",
@@ -167,14 +167,14 @@ abstract class Examples[T](mod: String) extends Specification with JsonMethods[T
   }
 }"""
       val jAst = parse(jString)
-      val filtered1: List[(String, JValue)] = jAst.filterField{
+      val filtered1: List[(String, JValue)] = jAst.filterField {
         case JField("longt", _) => false
         case _ => true
       }
       filtered1.exists(_._1 == "longt") must_== false
       filtered1.exists(_._1 == "error") must_== true
 
-      val filtered2: List[(String, JValue)] = jAst.filterField{
+      val filtered2: List[(String, JValue)] = jAst.filterField {
         case JField("error", _) => false
         case _ => true
       }
@@ -237,17 +237,19 @@ abstract class Examples[T](mod: String) extends Specification with JsonMethods[T
 
     "Example which collects all integers and forms a new JSON" in {
       val json = parse(person)
-      val ints = json.fold(JNothing: JValue) { (a, v) => v match {
-        case x: JInt => a ++ x
-        case _ => a
-      }}
+      val ints = json.fold(JNothing: JValue) { (a, v) =>
+        v match {
+          case x: JInt => a ++ x
+          case _ => a
+        }
+      }
       compact(render(ints)) must_== """[35,33]"""
     }
 
     "Generate JSON with DSL example" in {
       val json: JValue =
         ("id" -> 5) ~
-        ("tags" -> Map("a" -> 5, "b" -> 7))
+          ("tags" -> Map("a" -> 5, "b" -> 7))
       compact(render(json)) must_== """{"id":5,"tags":{"a":5,"b":7}}"""
     }
 
@@ -264,8 +266,8 @@ abstract class Examples[T](mod: String) extends Specification with JsonMethods[T
     }
 
     "List[Animal] example" in {
-//      case class Dog(name: String) extends Animal
-//      case class Fish(weight: Double) extends Animal
+      //      case class Dog(name: String) extends Animal
+      //      case class Fish(weight: Double) extends Animal
       implicit val fmts = DefaultFormats + ShortTypeHints(List[Class[_]](classOf[Dog], classOf[Fish]))
       val json = parse(s"""[{"name":"pluto","${fmts.typeHintFieldName}":"Dog"},{"weight":1.3,"${fmts.typeHintFieldName}":"Fish"}]""")
       Extraction.extract[List[Animal]](json) must_== Dog("pluto") :: Fish(1.3) :: Nil

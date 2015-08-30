@@ -17,7 +17,7 @@
 package org.json4s
 package mongo
 
-import java.util.{Calendar, Date, GregorianCalendar, UUID}
+import java.util.{ Calendar, Date, GregorianCalendar, UUID }
 import java.util.regex.Pattern
 import org.bson.types.ObjectId
 
@@ -27,17 +27,17 @@ object Meta {
   * For converting scala objects into DBObject values
   */
   object Reflection {
-    import com.mongodb.{BasicDBObject, DBRef}
+    import com.mongodb.{ BasicDBObject, DBRef }
 
     /*
     * These don't require a conversion and can be put directly into a DBObject
     */
     val primitives = Set[Class[_]](classOf[String], classOf[Int], classOf[Long], classOf[Double],
-                                  classOf[Float], classOf[Byte], classOf[BigInt], classOf[Boolean],
-                                  classOf[Short], classOf[java.lang.Integer], classOf[java.lang.Long],
-                                  classOf[java.lang.Double], classOf[java.lang.Float],
-                                  classOf[java.lang.Byte], classOf[java.lang.Boolean],
-                                  classOf[java.lang.Short])
+      classOf[Float], classOf[Byte], classOf[BigInt], classOf[Boolean],
+      classOf[Short], classOf[java.lang.Integer], classOf[java.lang.Long],
+      classOf[java.lang.Double], classOf[java.lang.Float],
+      classOf[java.lang.Byte], classOf[java.lang.Boolean],
+      classOf[java.lang.Short])
 
     def isPrimitive(clazz: Class[_]) = primitives contains clazz
 

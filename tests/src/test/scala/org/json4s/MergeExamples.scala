@@ -23,7 +23,7 @@ object NativeMergeExamples extends MergeExamples[Document]("Native") with native
 object JacksonMergeExamples extends MergeExamples[JValue]("Jackson") with jackson.JsonMethods
 abstract class MergeExamples[T](mod: String) extends Specification with JsonMethods[T] {
 
-  (mod+" Merge Examples") should {
+  (mod + " Merge Examples") should {
     "Merge example" in {
       (scala1 merge scala2) must_== expectedMergeResult
     }

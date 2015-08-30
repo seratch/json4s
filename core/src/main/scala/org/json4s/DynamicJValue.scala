@@ -10,9 +10,9 @@ class DynamicJValue(val raw: JValue) extends Dynamic {
    * JObject(JField("name",JString("joe"))::Nil).name == JString("joe")
    * </pre>
    */
-  def selectDynamic(name:String) = new DynamicJValue(raw \ name)
-  
-  override def hashCode():Int = raw.hashCode
+  def selectDynamic(name: String) = new DynamicJValue(raw \ name)
+
+  override def hashCode(): Int = raw.hashCode
 
   override def equals(p1: Any): Boolean = p1 match {
     case j: DynamicJValue => raw == j.raw
@@ -24,7 +24,7 @@ class DynamicJValue(val raw: JValue) extends Dynamic {
 trait DynamicJValueImplicits {
   implicit def dynamic2Jv(dynJv: DynamicJValue) = dynJv.raw
   implicit def dynamic2monadic(dynJv: DynamicJValue) = new MonadicJValue(dynJv.raw)
-  def dyn(jv:JValue) = new DynamicJValue(jv)
+  def dyn(jv: JValue) = new DynamicJValue(jv)
 }
 
 object DynamicJValue extends DynamicJValueImplicits

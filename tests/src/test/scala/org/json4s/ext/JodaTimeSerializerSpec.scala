@@ -20,20 +20,19 @@ package ext
 import org.joda.time._
 import org.specs2.mutable.Specification
 
-
 object NativeJodaTimeSerializerSpec extends JodaTimeSerializerSpec("Native") {
   val s: Serialization = native.Serialization
-  val m: JsonMethods[_] =  native.JsonMethods
+  val m: JsonMethods[_] = native.JsonMethods
 }
 
 object JacksonJodaTimeSerializerSpec extends JodaTimeSerializerSpec("Jackson") {
   val s: Serialization = jackson.Serialization
-  val m: JsonMethods[_] =  jackson.JsonMethods
+  val m: JsonMethods[_] = jackson.JsonMethods
 }
 
 /**
-* System under specification for JodaTimeSerializer.
-*/
+ * System under specification for JodaTimeSerializer.
+ */
 abstract class JodaTimeSerializerSpec(mod: String) extends Specification {
 
   def s: Serialization
@@ -43,9 +42,9 @@ abstract class JodaTimeSerializerSpec(mod: String) extends Specification {
 
   (mod + " JodaTimeSerializer Specification") should {
     "Serialize joda time types" in {
-      val x = JodaTypes(new Duration(10*1000), new Instant(System.currentTimeMillis),
-                        new DateTime, new DateMidnight, new Interval(1000, 50000),
-                        new LocalDate(2011, 1, 16), new LocalTime(16, 52, 10), Period.weeks(3))
+      val x = JodaTypes(new Duration(10 * 1000), new Instant(System.currentTimeMillis),
+        new DateTime, new DateMidnight, new Interval(1000, 50000),
+        new LocalDate(2011, 1, 16), new LocalTime(16, 52, 10), Period.weeks(3))
       val ser = s.write(x)
       s.read[JodaTypes](ser) must_== x
     }
@@ -91,7 +90,7 @@ abstract class JodaTimeSerializerSpec(mod: String) extends Specification {
 }
 
 case class JodaTypes(duration: Duration, instant: Instant, dateTime: DateTime,
-                     dateMidnight: DateMidnight, interval: Interval, localDate: LocalDate,
-                     localTime: LocalTime, period: Period)
+  dateMidnight: DateMidnight, interval: Interval, localDate: LocalDate,
+  localTime: LocalTime, period: Period)
 
 case class Dates(dt: DateTime, dm: DateMidnight)

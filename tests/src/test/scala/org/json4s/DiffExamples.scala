@@ -22,10 +22,10 @@ import text.Document
 object NativeDiffExamples extends DiffExamples[Document]("Native") with native.JsonMethods
 object JacksonDiffExamples extends DiffExamples[JValue]("Jackson") with jackson.JsonMethods
 
-abstract class DiffExamples[T](mod: String) extends Specification with JsonMethods[T]  {
+abstract class DiffExamples[T](mod: String) extends Specification with JsonMethods[T] {
 
   title(mod + " Diff Examples")
-  import NativeMergeExamples.{scala1, scala2, lotto1, lotto2, mergedLottoResult}
+  import NativeMergeExamples.{ scala1, scala2, lotto1, lotto2, mergedLottoResult }
 
   "Diff example" in {
     val Diff(changed, added, deleted) = scala1 diff scala2
@@ -33,7 +33,6 @@ abstract class DiffExamples[T](mod: String) extends Specification with JsonMetho
     added must_== expectedAdditions
     deleted must_== expectedDeletions
   }
-
 
   lazy val expectedChanges = parse("""
     {

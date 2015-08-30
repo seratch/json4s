@@ -1,11 +1,10 @@
 package org.json4s
 
-
 import java.util.Date
 import org.specs2.mutable.Specification
 
 object SerializationExamples extends Specification {
-  import native.Serialization.{read, write => swrite}
+  import native.Serialization.{ read, write => swrite }
 
   implicit val formats = native.Serialization.formats(NoTypeHints)
 
@@ -31,7 +30,7 @@ object SerializationExamples extends Specification {
   case class Nullable(name: String)
 
   "Lotto serialization example" in {
-    import LottoExample.{Lotto, lotto}
+    import LottoExample.{ Lotto, lotto }
 
     val ser = swrite(lotto)
     read[Lotto](ser) must_== lotto
@@ -51,7 +50,7 @@ object SerializationExamples extends Specification {
 
   "Map serialization example" in {
     val p = PersonWithAddresses("joe", Map("address1" -> Address("Bulevard", "Helsinki"),
-                                           "address2" -> Address("Soho", "London")))
+      "address2" -> Address("Soho", "London")))
     val ser = swrite(p)
     read[PersonWithAddresses](ser) must_== p
   }
@@ -168,7 +167,6 @@ object SerializationExamples extends Specification {
     read[PlayerWithGenericList](ser) must_== pw
   }
 
-
   case class Ints(x: List[List[Int]])
 
   case class Rec(n: Int, xs: List[Rec])
@@ -187,11 +185,10 @@ object ShortTypeHintExamples extends TypeHintExamples {
     native.Serialization.read[Animals](ser) must_== Animals(Nil, Dog("pluto"))
   }
 
-
 }
 
 object FullTypeHintExamples extends TypeHintExamples {
-  import native.Serialization.{read, write => swrite}
+  import native.Serialization.{ read, write => swrite }
 
   implicit val formats = native.Serialization.formats(FullTypeHints(List[Class[_]](classOf[Animal], classOf[True], classOf[False], classOf[Falcon], classOf[Chicken])))
 
@@ -232,7 +229,7 @@ object FullTypeHintExamples extends TypeHintExamples {
 }
 
 object CustomTypeHintFieldNameExample extends TypeHintExamples {
-  import native.Serialization.{read, write => swrite}
+  import native.Serialization.{ read, write => swrite }
 
   implicit val formats = new Formats {
     val dateFormat = DefaultFormats.lossless.dateFormat
@@ -248,7 +245,7 @@ object CustomTypeHintFieldNameExample extends TypeHintExamples {
 }
 
 trait TypeHintExamples extends Specification {
-  import native.Serialization.{read, write => swrite}
+  import native.Serialization.{ read, write => swrite }
 
   implicit val formats: Formats
 
@@ -279,7 +276,7 @@ case class Fish(weight: Double) extends Animal
 case class Objs(objects: List[Obj[_]])
 case class Obj[A](a: A)
 object CustomSerializerExamples extends Specification {
-  import native.Serialization.{read, write => swrite}
+  import native.Serialization.{ read, write => swrite }
   import JsonAST._
   import java.util.regex.Pattern
 
@@ -291,7 +288,7 @@ object CustomSerializerExamples extends Specification {
     {
       case x: Interval =>
         JObject(JField("start", JInt(BigInt(x.startTime))) ::
-                JField("end",   JInt(BigInt(x.endTime))) :: Nil)
+          JField("end", JInt(BigInt(x.endTime))) :: Nil)
     }
   ))
 
@@ -307,7 +304,7 @@ object CustomSerializerExamples extends Specification {
   class DateSerializer extends CustomSerializer[Date](format => (
     {
       case JObject(List(JField("$dt", JString(s)))) =>
-        format.dateFormat.parse(s).getOrElse(throw new MappingException("Can't parse "+ s + " to Date"))
+        format.dateFormat.parse(s).getOrElse(throw new MappingException("Can't parse " + s + " to Date"))
     },
     {
       case x: Date => JObject(JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
@@ -330,7 +327,7 @@ object CustomSerializerExamples extends Specification {
   }
 
   "Serialize with custom serializers" in {
-    implicit val formats =  native.Serialization.formats(NoTypeHints) +
+    implicit val formats = native.Serialization.formats(NoTypeHints) +
       new IntervalSerializer + new PatternSerializer + new DateSerializer + new IndexedSeqSerializer
 
     val i = new Interval(1, 4)
@@ -353,9 +350,8 @@ object CustomSerializerExamples extends Specification {
     val xs = Indexed(Vector("a", "b", "c"))
     val iser = swrite(xs)
     iser mustEqual """{"xs":["a","b","c"]}"""
-    read[Indexed](iser).xs.toList mustEqual List("a","b","c")
+    read[Indexed](iser).xs.toList mustEqual List("a", "b", "c")
   }
-
 
 }
 
@@ -367,7 +363,7 @@ class Interval(start: Long, end: Long) {
 }
 
 object CustomClassWithTypeHintsExamples extends Specification {
-  import native.Serialization.{read, write => swrite}
+  import native.Serialization.{ read, write => swrite }
   import JsonAST._
 
   val hints = new ShortTypeHints(classOf[DateTime] :: Nil) {

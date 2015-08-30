@@ -86,8 +86,8 @@ trait Base { this: Types =>
 
   implicit def listJSONR[A: JSONR]: JSONR[List[A]] = new JSONR[List[A]] {
     def read(json: JValue) = json match {
-      case JArray(xs) => 
-        xs.map(fromJSON[A]).sequence[({type λ[t] = ValidationNel[Error, t]})#λ, A]
+      case JArray(xs) =>
+        xs.map(fromJSON[A]).sequence[({ type λ[t] = ValidationNel[Error, t] })#λ, A]
       case x => UnexpectedJSONError(x, classOf[JArray]).failureNel
     }
   }
@@ -109,12 +109,12 @@ trait Base { this: Types =>
     def read(json: JValue) = json match {
       case JObject(fs) =>
         val m = fs.map(f => fromJSON[A](f._2) map (f._1 -> _))
-        val mm = m.sequence[({type λ[t] = ValidationNel[Error, t]})#λ, (String, A)]
+        val mm = m.sequence[({ type λ[t] = ValidationNel[Error, t] })#λ, (String, A)]
         mm.map(_.toMap)
-//        val r = m.sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, (String, A)]
-//        r.map(_.toMap)
-//        val r = fs.map(f => fromJSON[A](f._2).map(v => (f._1, v))).sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, (String, A)]
-//        r.map(_.toMap)
+      //        val r = m.sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, (String, A)]
+      //        r.map(_.toMap)
+      //        val r = fs.map(f => fromJSON[A](f._2).map(v => (f._1, v))).sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, (String, A)]
+      //        r.map(_.toMap)
       case x => UnexpectedJSONError(x, classOf[JObject]).failureNel
     }
   }

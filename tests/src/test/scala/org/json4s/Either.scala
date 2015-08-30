@@ -26,7 +26,6 @@ abstract class EitherTest[T](mod: String) extends Specification with JsonMethods
 
   implicit val formats: Formats = DefaultFormats + ShortTypeHints(List(classOf[Either[_, _]], classOf[List[_]]))
 
-
   (mod + " EitherTest Specification") should {
     "See that it works for Option[Int]" in {
       val opt = OptionInt(Some(39))

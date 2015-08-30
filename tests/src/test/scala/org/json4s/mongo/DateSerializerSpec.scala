@@ -2,21 +2,21 @@ package org.json4s
 package mongo
 
 import org.specs2.mutable.Specification
-import org.json4s.{Extraction, DefaultFormats}
+import org.json4s.{ Extraction, DefaultFormats }
 import java.util.Date
 
 object DateSerializerSpec {
   case class WithDate(id: Int, name: String, createdAt: Date)
   case class EventWithDate(
-  	timestamp: Date,
-  	index: Int,
-  	event: String,
-  	description: String,
-  	version: String,
-  	platform: String,
-  	device: String,
-  	userId: String,
-  	params: List[String] = Nil)
+    timestamp: Date,
+    index: Int,
+    event: String,
+    description: String,
+    version: String,
+    platform: String,
+    device: String,
+    userId: String,
+    params: List[String] = Nil)
 }
 class DateSerializerSpec extends Specification {
 

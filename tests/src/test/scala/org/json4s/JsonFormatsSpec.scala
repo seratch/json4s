@@ -1,31 +1,30 @@
 package org.json4s
 
-
 import org.specs2.mutable.Specification
 import text.Document
 
 class NativeJsonFormatsSpec extends JsonFormatsSpec[Document]("Native") with native.JsonMethods
 class JacksonJsonFormatsSpec extends JsonFormatsSpec[JValue]("Jackson") with jackson.JsonMethods
 /**
-* System under specification for JSON Formats.
-*/
+ * System under specification for JSON Formats.
+ */
 abstract class JsonFormatsSpec[T](mod: String) extends Specification with TypeHintExamples with JsonMethods[T] {
   implicit val formats = ShortTypeHintExamples.formats + FullTypeHintExamples.formats.typeHints
 
-  val hintsForFish   = FullTypeHintExamples.formats.typeHints.hintFor(classOf[Fish])
-  val hintsForDog    = FullTypeHintExamples.formats.typeHints.hintFor(classOf[Dog])
+  val hintsForFish = FullTypeHintExamples.formats.typeHints.hintFor(classOf[Fish])
+  val hintsForDog = FullTypeHintExamples.formats.typeHints.hintFor(classOf[Dog])
   val hintsForAnimal = FullTypeHintExamples.formats.typeHints.hintFor(classOf[Animal])
 
-  (mod+" JsonFormats Specification") should {
+  (mod + " JsonFormats Specification") should {
     "hintsFor across composite formats" in {
-      formats.typeHints.hintFor(classOf[Fish])   must_== (hintsForFish)
-      formats.typeHints.hintFor(classOf[Dog])    must_== (hintsForDog)
+      formats.typeHints.hintFor(classOf[Fish]) must_== (hintsForFish)
+      formats.typeHints.hintFor(classOf[Dog]) must_== (hintsForDog)
       formats.typeHints.hintFor(classOf[Animal]) must_== (hintsForAnimal)
     }
 
     "classFor across composite formats" in {
-      formats.typeHints.classFor(hintsForFish)   must_== (FullTypeHintExamples.formats.typeHints.classFor(hintsForFish))
-      formats.typeHints.classFor(hintsForDog)    must_== (FullTypeHintExamples.formats.typeHints.classFor(hintsForDog))
+      formats.typeHints.classFor(hintsForFish) must_== (FullTypeHintExamples.formats.typeHints.classFor(hintsForFish))
+      formats.typeHints.classFor(hintsForDog) must_== (FullTypeHintExamples.formats.typeHints.classFor(hintsForDog))
       formats.typeHints.classFor(hintsForAnimal) must_== (FullTypeHintExamples.formats.typeHints.classFor(hintsForAnimal))
     }
 

@@ -47,16 +47,18 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
     case Error(x) => in: S => Error(x)
   }
 
-  /** Creates a rule that always succeeds with a Boolean value.
-   *  Value is 'true' if this rule succeeds, 'false' otherwise */
+  /**
+   * Creates a rule that always succeeds with a Boolean value.
+   *  Value is 'true' if this rule succeeds, 'false' otherwise
+   */
   def -? = ? map { _ isDefined }
 
   def * = from[S] {
     // tail-recursive function with reverse list accumulator
     def rep(in: S, acc: List[A]): Result[S, List[A], X] = rule(in) match {
-       case Success(out, a) => rep(out, a :: acc)
-       case Failure => Success(in, acc.reverse)
-       case err: Error[_] => err
+      case Success(out, a) => rep(out, a :: acc)
+      case Failure => Success(in, acc.reverse)
+      case err: Error[_] => err
     }
     in => rep(in, Nil)
   }
@@ -87,12 +89,12 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
     def rep(i: Int, in: S): Result[S, Seq[A], X] = {
       if (i == num) Success(in, result)
       else rule(in) match {
-       case Success(out, a) => {
-         result(i) = a
-         rep(i + 1, out)
-       }
-       case Failure => Failure
-       case err: Error[_] => err
+        case Success(out, a) => {
+          result(i) = a
+          rep(i + 1, out)
+        }
+        case Failure => Failure
+        case err: Error[_] => err
       }
     }
     in => rep(0, in)

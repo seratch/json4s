@@ -24,7 +24,7 @@ import scala.collection.JavaConverters._
 import com.mongodb.DBObject
 import scala.util.control.Exception._
 
-object JObjectParserSpec extends Specification  {
+object JObjectParserSpec extends Specification {
 
   title("JObjectParser Specification")
 

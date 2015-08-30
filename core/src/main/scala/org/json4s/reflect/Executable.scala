@@ -1,7 +1,7 @@
 package org.json4s
 package reflect
 
-import java.lang.reflect.{AccessibleObject, Type, Constructor, Method}
+import java.lang.reflect.{ AccessibleObject, Type, Constructor, Method }
 
 import org.json4s.MappingException
 
@@ -43,7 +43,7 @@ class Executable private (val method: Method, val constructor: Constructor[_]) {
   }
 
   def invoke(companion: Option[SingletonDescriptor], args: Seq[Any]) = {
-    if (method !=  null) {
+    if (method != null) {
       companion match {
         case Some(cmp) => method.invoke(cmp.instance, args.map(_.asInstanceOf[AnyRef]).toArray: _*)
         case None => throw new MappingException("Trying to call apply method, but the companion object was not found.")

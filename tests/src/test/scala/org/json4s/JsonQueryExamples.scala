@@ -23,11 +23,11 @@ object NativeJsonQueryExamples extends JsonQueryExamples[Document]("Native") wit
 object JacksonJsonQueryExamples extends JsonQueryExamples[JValue]("Jackson") with jackson.JsonMethods
 
 /**
-* System under specification for JSON Query Examples.
-*/
+ * System under specification for JSON Query Examples.
+ */
 abstract class JsonQueryExamples[T](mod: String) extends Specification with JsonMethods[T] {
 
-  (mod+" JSON Query Examples") should {
+  (mod + " JSON Query Examples") should {
     "List of IPs" in {
       val ips = for { JString(ip) <- json \\ "ip" } yield ip
       ips must_== List("192.168.1.125", "192.168.1.126", "192.168.1.127", "192.168.2.125", "192.168.2.126")
@@ -42,7 +42,8 @@ abstract class JsonQueryExamples[T](mod: String) extends Specification with Json
       val ips = for {
         cluster @ JObject(x) <- json \ "data_center"
         if (x contains JField("name", JString("cluster2")))
-        JString(ip) <- cluster \\ "ip" } yield ip
+        JString(ip) <- cluster \\ "ip"
+      } yield ip
       ips must_== List("192.168.2.125", "192.168.2.126")
     }
 

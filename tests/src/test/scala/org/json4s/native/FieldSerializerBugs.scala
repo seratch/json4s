@@ -5,11 +5,11 @@ import org.specs2.mutable.Specification
 object FieldSerializerBugs extends Specification {
   import native.JsonMethods._
   import native.Serialization
-  import Serialization.{read, write => swrite}
+  import Serialization.{ read, write => swrite }
 
   implicit val formats = DefaultFormats + FieldSerializer[AnyRef]()
 
-/* FIXME: it doesn't cause a stack overflow but the ser/deser doesn't work
+  /* FIXME: it doesn't cause a stack overflow but the ser/deser doesn't work
   "AtomicInteger should not cause stack overflow" in {
     import java.util.concurrent.atomic.AtomicInteger
 
@@ -60,5 +60,4 @@ object FieldSerializerBugs extends Specification {
 
   object SingletonObject
 }
-
 

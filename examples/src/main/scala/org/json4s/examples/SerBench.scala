@@ -4,7 +4,7 @@ package examples
 import java.util.Date
 import org.json4s._
 import java.io._
-import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
+import com.fasterxml.jackson.databind.{ JsonNode, ObjectMapper }
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import java.util.concurrent.atomic.AtomicLong
 
@@ -39,18 +39,16 @@ object SerBench extends Benchmark {
   val counter = new AtomicLong(0)
   def project = {
     val c = counter.incrementAndGet()
-    Project("test"+c, new Date, Some(Language("Scala"+c, 2.75+c)), List(
-      Team("QA"+c, List(Employee("John Doe"+c, 5+c.toInt), Employee("Mike"+c, 3+c.toInt))),
-      Team("Impl"+c, List(Employee("Mark"+c, 4+c.toInt), Employee("Mary"+c, 5+c.toInt), Employee("Nick Noob"+c, 1+c.toInt)))))
+    Project("test" + c, new Date, Some(Language("Scala" + c, 2.75 + c)), List(
+      Team("QA" + c, List(Employee("John Doe" + c, 5 + c.toInt), Employee("Mike" + c, 3 + c.toInt))),
+      Team("Impl" + c, List(Employee("Mark" + c, 4 + c.toInt), Employee("Mary" + c, 5 + c.toInt), Employee("Nick Noob" + c, 1 + c.toInt)))))
   }
 
   val projJson = Extraction.decompose(project)(DefaultFormats)
 
   val projectJValue = {
-    projJson merge (JObject(JField("name", JString("test"+counter.incrementAndGet()))))
+    projJson merge (JObject(JField("name", JString("test" + counter.incrementAndGet()))))
   }
-
-
 
   val mapper = new ObjectMapper()
   mapper.registerModule(DefaultScalaModule)
@@ -80,7 +78,7 @@ object SerBench extends Benchmark {
 
     println("### Json4s direct AST")
     parseBenchmark("json4s-native AST (parse)") { native.JsonMethods.parse(json) }
-    parseBenchmark("json4s-jackson AST (parse)") { jackson.JsonMethods.parse(json)}
+    parseBenchmark("json4s-jackson AST (parse)") { jackson.JsonMethods.parse(json) }
     benchmark("json4s-native AST (ser)") { native.JsonMethods.compact(native.JsonMethods.render(projectJValue)) }
     benchmark("json4s-jackson AST (ser)") { jackson.JsonMethods.compact(projectJValue) }
     println()
@@ -113,29 +111,25 @@ object SerBench extends Benchmark {
   }
 
   def deserialize(array: Array[Byte]) =
-        new ObjectInputStream(new ByteArrayInputStream(array)).readObject.asInstanceOf[Project]
+    new ObjectInputStream(new ByteArrayInputStream(array)).readObject.asInstanceOf[Project]
 
   class Bench(implicit formats: Formats) {
-//    benchmark("Java serialization (full)") { deserialize(serialize(project)) }
+    //    benchmark("Java serialization (full)") { deserialize(serialize(project)) }
 
-    benchmark("json4s-native (full)") { native.Serialization.read[Project]( native.Serialization.write(project)) }
-    benchmark("json4s-jackson (full)") { jackson.Serialization.read[Project]( jackson.Serialization.write(project)) }
+    benchmark("json4s-native (full)") { native.Serialization.read[Project](native.Serialization.write(project)) }
+    benchmark("json4s-jackson (full)") { jackson.Serialization.read[Project](jackson.Serialization.write(project)) }
     benchmark("json4s-native (ser)") { native.Serialization.write(project) }
     benchmark("json4s-jackson (ser)") { jackson.Serialization.write(project) }
-//    val ser1 = serialize(project)
+    //    val ser1 = serialize(project)
     val ser2 = native.Serialization.write(project)
 
-//    benchmark("Java serialization (deser)") { deserialize(ser1) }
+    //    benchmark("Java serialization (deser)") { deserialize(ser1) }
 
     benchmark("json4s-native (deser)") { native.Serialization.read[Project](ser2) }
     benchmark("json4s-jackson (deser)") { jackson.Serialization.read[Project](ser2) }
 
     benchmark("json4s-native old pretty") { native.Serialization.writePrettyOld(project) }
-//    benchmark("json4s-jackson old pretty") { jackson.Serialization.writePrettyOld(project) }
-
-
-
-
+    //    benchmark("json4s-jackson old pretty") { jackson.Serialization.writePrettyOld(project) }
 
   }
 
@@ -165,27 +159,27 @@ object SerBench extends Benchmark {
           case _ => Nil
         }
       )
-  },{
+  }, {
     case pr: org.json4s.examples.Project => {
       import JsonDSL._
 
       val lang = pr.lang map { l =>
         ("name" -> l.name) ~
-        ("version" -> l.version)
+          ("version" -> l.version)
       } getOrElse JNothing
 
       val teams = pr.teams map { team =>
         ("role" -> team.role) ~
-        ("members" -> (team.members map { mem =>
-          ("name" -> mem.name) ~
-          ("experience" -> mem.experience)
-        }))
+          ("members" -> (team.members map { mem =>
+            ("name" -> mem.name) ~
+              ("experience" -> mem.experience)
+          }))
       }
 
       ("name" -> pr.name) ~
-      ("startDate" -> formats.dateFormat.format(pr.startDate)) ~
-      ("lang" -> lang) ~
-      ("teams" -> teams)
+        ("startDate" -> formats.dateFormat.format(pr.startDate)) ~
+        ("lang" -> lang) ~
+        ("teams" -> teams)
     }
   }))
 

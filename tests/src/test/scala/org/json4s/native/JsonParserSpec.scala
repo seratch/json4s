@@ -1,17 +1,17 @@
 package org.json4s
 
 import org.specs2.ScalaCheck
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Prop._
 import org.specs2.mutable.Specification
 import org.json4s.jackson.JsonMethods._
 
 /**
-* System under specification for JSON Parser.
-*/
+ * System under specification for JSON Parser.
+ */
 object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
   import scala.text.Document
-  import native.{JsonParser,Printer}
+  import native.{ JsonParser, Printer }
   import native.JsonMethods._
 
   "A JSON Parser" should {
@@ -37,7 +37,7 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
     }
 
     "All valid string escape characters can be parsed" in {
-      parse("[\"abc\\\"\\\\\\/\\b\\f\\n\\r\\t\\u00a0\"]") must_== JArray(JString("abc\"\\/\b\f\n\r\t\u00a0")::Nil)
+      parse("[\"abc\\\"\\\\\\/\\b\\f\\n\\r\\t\\u00a0\"]") must_== JArray(JString("abc\"\\/\b\f\n\r\t\u00a0") :: Nil)
     }
 
     "Unclosed string literal fails parsing" in {
@@ -46,7 +46,7 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
     }
 
     "parses doubles as bigdecimal" in {
-      JsonParser.parse("[1.234]", useBigDecimalForDouble = true) must_== JArray(JDecimal(BigDecimal("1.234"))::Nil)
+      JsonParser.parse("[1.234]", useBigDecimalForDouble = true) must_== JArray(JDecimal(BigDecimal("1.234")) :: Nil)
     }
 
     "parse -1.40737488355328E+15 as bigdecimal" in {

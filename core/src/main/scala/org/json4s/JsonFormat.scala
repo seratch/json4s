@@ -1,8 +1,7 @@
 package org.json4s
 
-import collection.{generic, immutable}
+import collection.{ generic, immutable }
 import annotation.implicitNotFound
-
 
 // based on the type classes from play 2 but with the conversions from lift-json
 @implicitNotFound(
@@ -19,8 +18,8 @@ trait DefaultReaders {
       case JInt(x) => x.intValue
       case JDouble(x) => x.intValue
       case JDecimal(x) => x.intValue
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toInt
-//      case JNull => 0
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toInt
+      //      case JNull => 0
       case x => throw new MappingException("Can't convert %s to Int." format x)
     }
   }
@@ -30,8 +29,8 @@ trait DefaultReaders {
       case JInt(x) => x
       case JDouble(x) => BigInt(x.longValue)
       case JDecimal(x) => x.toBigInt()
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => BigInt(s)
-//      case JNull => 0
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => BigInt(s)
+      //      case JNull => 0
       case x => throw new MappingException("Can't convert %s to BigInt." format x)
     }
   }
@@ -41,8 +40,8 @@ trait DefaultReaders {
       case JInt(x) => x.longValue
       case JDouble(x) => x.longValue
       case JDecimal(x) => x.longValue
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toLong
-//      case JNull => 0
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toLong
+      //      case JNull => 0
       case x => throw new MappingException("Can't convert %s to Long." format x)
     }
   }
@@ -52,7 +51,7 @@ trait DefaultReaders {
       case JInt(x) => x.shortValue
       case JDouble(x) => x.shortValue
       case JDecimal(x) => x.shortValue
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toShort
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toShort
       case JNull => 0
       case x => throw new MappingException("Can't convert %s to Short." format x)
     }
@@ -63,7 +62,7 @@ trait DefaultReaders {
       case JInt(x) => x.byteValue
       case JDouble(x) => x.byteValue
       case JDecimal(x) => x.byteValue
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toByte
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(Character.isDigit)) => s.toByte
       case JNull => 0
       case x => throw new MappingException("Can't convert %s to Byte." format x)
     }
@@ -74,7 +73,7 @@ trait DefaultReaders {
       case JInt(x) => x.floatValue
       case JDouble(x) => x.floatValue
       case JDecimal(x) => x.floatValue
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(i => Character.isDigit(i) || i == ',' || i == '.')) => s.toFloat
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(i => Character.isDigit(i) || i == ',' || i == '.')) => s.toFloat
       case JNull => 0
       case x => throw new MappingException("Can't convert %s to Float." format x)
     }
@@ -85,7 +84,7 @@ trait DefaultReaders {
       case JInt(x) => x.doubleValue
       case JDouble(x) => x
       case JDecimal(x) => x.doubleValue
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(i => Character.isDigit(i) || i == ',' || i == '.')) => s.toDouble
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(i => Character.isDigit(i) || i == ',' || i == '.')) => s.toDouble
       case JNull => 0
       case x => throw new MappingException("Can't convert %s to Double." format x)
     }
@@ -96,7 +95,7 @@ trait DefaultReaders {
       case JInt(x) => BigDecimal(x)
       case JDouble(x) => BigDecimal(x)
       case JDecimal(x) => x
-//      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(i => Character.isDigit(i) || i == ',' || i == '.')) => BigDecimal(s)
+      //      case JString(s) if (s != null && s.trim.nonEmpty && s.forall(i => Character.isDigit(i) || i == ',' || i == '.')) => BigDecimal(s)
       case JNull => 0
       case x => throw new MappingException("Can't convert %s to BigDecimal." format x)
     }
@@ -106,7 +105,7 @@ trait DefaultReaders {
     def read(value: _root_.org.json4s.JValue): Boolean = value match {
       case JBool(v) => v
       case JNull => false
-//      case JString(s) if s.equalsIgnoreCase("true") || s.equalsIgnoreCase("false") => s.toBoolean
+      //      case JString(s) if s.equalsIgnoreCase("true") || s.equalsIgnoreCase("false") => s.toBoolean
       case x => throw new MappingException("Can't convert %s to Boolean." format x)
     }
   }
@@ -125,7 +124,7 @@ trait DefaultReaders {
 
   implicit def mapReader[V](implicit valueReader: Reader[V]): Reader[immutable.Map[String, V]] = new Reader[immutable.Map[String, V]] {
     def read(value: _root_.org.json4s.JValue): Map[String, V] = value match {
-      case JObject(v) => Map(v.map({ case JField(k, vl) => k -> valueReader.read(vl)}):_*)
+      case JObject(v) => Map(v.map({ case JField(k, vl) => k -> valueReader.read(vl) }): _*)
       case x => throw new MappingException("Can't convert %s to Map." format x)
     }
   }
@@ -135,12 +134,12 @@ trait DefaultReaders {
       def read(value: _root_.org.json4s.JValue): F[V] = value match {
         case JArray(items) =>
           val builder = cbf()
-          (items.foldLeft(builder) { (acc, i) => acc += valueReader.read(i); acc}).result()
+          (items.foldLeft(builder) { (acc, i) => acc += valueReader.read(i); acc }).result()
         case x => throw new MappingException("Can't convert %s to Traversable." format x)
       }
     }
 
-  implicit def arrayReader[T:Manifest:Reader]: Reader[Array[T]] = new Reader[Array[T]] {
+  implicit def arrayReader[T: Manifest: Reader]: Reader[Array[T]] = new Reader[Array[T]] {
     def read(value: _root_.org.json4s.JValue): Array[T] = {
       value.as[List[T]].toArray
     }
@@ -195,7 +194,7 @@ trait DefaultWriters {
     def write(obj: Array[T]): _root_.org.json4s.JValue = JArray(obj.map(valueWriter.write(_)).toList)
   }
   implicit def mapWriter[V](implicit valueWriter: Writer[V]): Writer[immutable.Map[String, V]] = new Writer[Map[String, V]] {
-    def write(obj: Map[String, V]): _root_.org.json4s.JValue = JObject(obj.map({case (k, v) => k -> valueWriter.write(v)}).toList)
+    def write(obj: Map[String, V]): _root_.org.json4s.JValue = JObject(obj.map({ case (k, v) => k -> valueWriter.write(v) }).toList)
   }
   implicit object JValueWriter extends W[JValue](identity)
   implicit def OptionWriter[T](implicit valueWriter: Writer[T]): Writer[Option[T]] = new Writer[Option[T]] {
@@ -221,7 +220,6 @@ trait BigDecimalWriters extends DefaultWriters {
 object BigDecimalWriters extends BigDecimalWriters
 object DoubleWriters extends DoubleWriters
 object DefaultWriters extends DoubleWriters // alias for DoubleWriters
-
 
 @implicitNotFound(
   "No Json formatter found for type ${T}. Try to implement an implicit JsonFormat for this type."

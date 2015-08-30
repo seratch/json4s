@@ -1,8 +1,8 @@
 package org.json4s.jackson
 
 import com.fasterxml.jackson.databind.`type`.TypeFactory
-import com.fasterxml.jackson.databind.{DeserializationFeature, DeserializationContext, JsonDeserializer}
-import com.fasterxml.jackson.core.{JsonTokenId, JsonToken, JsonParser}
+import com.fasterxml.jackson.databind.{ DeserializationFeature, DeserializationContext, JsonDeserializer }
+import com.fasterxml.jackson.core.{ JsonTokenId, JsonToken, JsonParser }
 import collection.mutable
 import org.json4s._
 
@@ -28,7 +28,7 @@ class JValueDeserializer(factory: TypeFactory, klass: Class[_]) extends JsonDese
       case JsonTokenId.ID_START_ARRAY =>
         val values = new mutable.MutableList[JValue]()
         jp.nextToken()
-        while(jp.getCurrentToken != JsonToken.END_ARRAY) {
+        while (jp.getCurrentToken != JsonToken.END_ARRAY) {
           values += deserialize(jp, ctxt).asInstanceOf[JValue]
           jp.nextToken()
         }

@@ -2,7 +2,7 @@ package org.json4s
 
 import org.json4s.ExtractionBugs.SomeOtherContent.SomeOtherContentClass
 import org.specs2.mutable.Specification
-import reflect.{ClassDescriptor, Reflector}
+import reflect.{ ClassDescriptor, Reflector }
 import text.Document
 import java.util
 
@@ -14,7 +14,6 @@ trait SharedModule {
 }
 
 object PingPongGame extends SharedModule
-
 
 object ExtractionBugs {
   case class Response(data: List[Map[String, Int]])
@@ -37,7 +36,7 @@ object ExtractionBugs {
     def hello = "hello"
   }
   case class HasCompanion(nums: List[Int])
-  
+
   case class ABigDecimal(num: BigDecimal)
 
   trait Content {
@@ -75,7 +74,7 @@ abstract class ExtractionBugs[T](mod: String) extends Specification with JsonMet
   import ExtractionBugs._
   implicit val formats: Formats = DefaultFormats.withCompanions(classOf[PingPongGame.SharedObj] -> PingPongGame)
 
-  (mod+" Extraction bugs Specification") should {
+  (mod + " Extraction bugs Specification") should {
     "ClassCastException (BigInt) regression 2 must pass" in {
       val opt = OptionOfInt(Some(39))
       Extraction.decompose(opt).extract[OptionOfInt].opt.get must_== 39

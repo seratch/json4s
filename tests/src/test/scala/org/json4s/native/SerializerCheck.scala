@@ -40,7 +40,7 @@ object SerializerCheck extends Properties("serializer") {
       decimalMode
     )
     val res = lst1 == lst2
-    if(!res) {
+    if (!res) {
       println("input: " + lst1)
       println("deser: " + lst2)
       println("*" * 80)

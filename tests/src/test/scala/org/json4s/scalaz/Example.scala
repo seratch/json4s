@@ -48,8 +48,8 @@ object Example extends Specification {
 
     val p = Person("joe", 34, Address("Manhattan 2", "00223"))
     val json = makeObj(("name" -> toJSON(p.name)) ::
-                       ("age" -> toJSON(p.age)) ::
-                       ("address" -> toJSON(p.address)) :: Nil)
+      ("age" -> toJSON(p.age)) ::
+      ("address" -> toJSON(p.address)) :: Nil)
     json.shows mustEqual
       """{"name":"joe","age":34,"address":{"street":"Manhattan 2","zip":"00223"}}"""
   }

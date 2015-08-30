@@ -28,20 +28,20 @@ object NativeJsonXmlSpec extends JsonXmlSpec[Document]("Native") with native.Jso
 object JacksonXmlSpec extends JsonXmlSpec[JValue]("Jackson") with jackson.JsonMethods
 
 /**
-* System under specification for JSON XML.
-*/
+ * System under specification for JSON XML.
+ */
 abstract class JsonXmlSpec[T](mod: String) extends Specification with NodeGen with JValueGen with ScalaCheck with JsonMethods[T] {
   import Xml._
   import scala.xml.Node
 
-  (mod+" JSON XML Specification") should {
+  (mod + " JSON XML Specification") should {
     "Valid XML can be converted to JSON and back (symmetric op)" in {
       val conversion = (xml: Node) => { toXml(toJson(xml)).head must_== xml }
       prop(conversion)
     }
 
     "JSON can be converted to XML, and back to valid JSON (non symmetric op)" in {
-      val conversion = (json: JValue) => { parse(compact(render(toJson(toXml(json))))); true must beTrue}
+      val conversion = (json: JValue) => { parse(compact(render(toJson(toXml(json))))); true must beTrue }
       prop(conversion)
     }
   }

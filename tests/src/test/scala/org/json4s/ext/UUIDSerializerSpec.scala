@@ -20,7 +20,6 @@ package ext
 import java.util.UUID
 import org.specs2.mutable.Specification
 
-
 object NativeUUIDSerializerSpec extends UUIDSerializerSpec("Native") {
   val s: Serialization = native.Serialization
 }
@@ -30,8 +29,8 @@ object JacksonUUIDSerializerSpec extends UUIDSerializerSpec("Jackson") {
 }
 
 /**
-* System under specification for UUIDSerializer.
-*/
+ * System under specification for UUIDSerializer.
+ */
 abstract class UUIDSerializerSpec(mod: String) extends Specification {
 
   def s: Serialization
@@ -39,12 +38,12 @@ abstract class UUIDSerializerSpec(mod: String) extends Specification {
 
   (mod + " UUIDSerializer Specification") should {
     "Serialize UUID's" in {
-      val x = SubjectWithUUID(id=UUID.randomUUID())
+      val x = SubjectWithUUID(id = UUID.randomUUID())
       val ser = s.write(x)
       s.read[SubjectWithUUID](ser) must_== x
     }
   }
 }
 
-case class SubjectWithUUID(id:UUID)
+case class SubjectWithUUID(id: UUID)
 

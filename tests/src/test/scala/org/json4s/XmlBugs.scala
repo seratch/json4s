@@ -21,14 +21,14 @@ import text.Document
 
 object NativeXmlBugs extends XmlBugs[Document]("Native") with native.JsonMethods
 object JacksonXmlBugs extends XmlBugs[JValue]("Jackson") with jackson.JsonMethods
-abstract class XmlBugs[T](mod: String) extends Specification with JsonMethods[T]{
+abstract class XmlBugs[T](mod: String) extends Specification with JsonMethods[T] {
   import Xml._
-  import scala.xml.{Group, Text}
+  import scala.xml.{ Group, Text }
 
-  (mod+" XML Bugs") should {
+  (mod + " XML Bugs") should {
     "HarryH's XML parses correctly" in {
       val xml1 = <venue><id>123</id></venue>
-      val xml2 = <venue> <id>{"1"}{"23"}</id> </venue>
+      val xml2 = <venue> <id>{ "1" }{ "23" }</id> </venue>
       Xml.toJson(xml1) must_== Xml.toJson(xml2)
     }
 
@@ -51,25 +51,25 @@ abstract class XmlBugs[T](mod: String) extends Specification with JsonMethods[T]
     "Nodes with attributes converted to correct JSON" in {
       val xml =
         <root>
-          <n id="10" x="abc" />
-          <n id="11" x="bcd" />
+          <n id="10" x="abc"/>
+          <n id="11" x="bcd"/>
         </root>
-//<<<<<<< HEAD
-//      val expected = if (BuildInfo.scalaVersion.startsWith("2.10"))
-//        """{"root":{"n":[{"id":"10","x":"abc"},{"id":"11","x":"bcd"}]}}"""
-//      else
-//        """{"root":{"n":[{"x":"abc","id":"10"},{"x":"bcd","id":"11"}]}}"""
-//      compact(render(toJson(xml))) must_== expected
-//    }
-//
-//    "XML with empty node is converted correctly to JSON" in {
-//      val xml =
-//        <tips><group type="Foo"></group><group type="Bar"><tip><text>xxx</text></tip><tip><text>yyy</text></tip></group></tips>
-//      val expected = """{"tips":{"group":[{"type":"Foo"},{"type":"Bar","tip":[{"text":"xxx"},{"text":"yyy"}]}]}}"""
-//      compact(render(toJson(xml))) must_== expected
-//    }
-//
-//=======
+      //<<<<<<< HEAD
+      //      val expected = if (BuildInfo.scalaVersion.startsWith("2.10"))
+      //        """{"root":{"n":[{"id":"10","x":"abc"},{"id":"11","x":"bcd"}]}}"""
+      //      else
+      //        """{"root":{"n":[{"x":"abc","id":"10"},{"x":"bcd","id":"11"}]}}"""
+      //      compact(render(toJson(xml))) must_== expected
+      //    }
+      //
+      //    "XML with empty node is converted correctly to JSON" in {
+      //      val xml =
+      //        <tips><group type="Foo"></group><group type="Bar"><tip><text>xxx</text></tip><tip><text>yyy</text></tip></group></tips>
+      //      val expected = """{"tips":{"group":[{"type":"Foo"},{"type":"Bar","tip":[{"text":"xxx"},{"text":"yyy"}]}]}}"""
+      //      compact(render(toJson(xml))) must_== expected
+      //    }
+      //
+      //=======
       val expected = """{"root":{"n":[{"id":"10","x":"abc"},{"id":"11","x":"bcd"}]}}"""
       compact(render(toJson(xml))) must_== expected
     }

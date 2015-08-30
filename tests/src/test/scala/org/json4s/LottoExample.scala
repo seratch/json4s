@@ -44,7 +44,6 @@ abstract class LottoExample[T](mod: String) extends Specification with JsonMetho
       val winn: Winner = extractWinner((json \ "lotto" \ "winners")(0))
       winn.`winner-id` must_== exp.`winner-id`
 
-
       extractLotto(json \ "lotto") must_== lotto
 
       json.values must_== Map("lotto" -> Map("id" -> 5, "winning-numbers" -> List(2, 45, 34, 23, 7, 5, 3), "draw-date" -> None, "winners" -> List(Map("winner-id" -> 23, "numbers" -> List(2, 45, 34, 23, 3, 5)), Map("winner-id" -> 54, "numbers" -> List(52, 3, 12, 11, 18, 22)))))
@@ -72,6 +71,7 @@ object LottoExample {
       ("winners" ->
         lotto.winners.map { w =>
           (("winner-id" -> w.`winner-id`) ~
-           ("numbers" -> w.numbers))}))
+            ("numbers" -> w.numbers))
+        }))
 
 }

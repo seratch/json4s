@@ -4,10 +4,9 @@ import org.specs2.ScalaCheck
 import org.scalacheck.Arbitrary
 import org.specs2.mutable.Specification
 
-
 /**
-* System under specification for JSON Printing.
-*/
+ * System under specification for JSON Printing.
+ */
 object JsonPrintingSpec extends Specification with JValueGen with ScalaCheck {
   import scala.text.Document
   import native.Printer

@@ -1,12 +1,10 @@
 package org.json4s
 
-
 import org.specs2.mutable.Specification
 
-
 /**
-* System under specification for JSON Pull Parser.
-*/
+ * System under specification for JSON Pull Parser.
+ */
 object PullParserExamples extends Specification {
 
   import native.JsonParser

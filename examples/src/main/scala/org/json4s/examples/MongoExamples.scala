@@ -16,7 +16,6 @@ object MongoExamples extends App with jackson.JsonMethods {
     }
   }
 
-
   val mongo = new MongoClient("127.0.0.1")
   val db = mongo.getDB("json4s_examples")
   val coll = db.getCollection("swagger_data")
@@ -40,8 +39,9 @@ object MongoExamples extends App with jackson.JsonMethods {
     println("Swagger api has been harvested.")
   }
 
-  f onFailure { case r =>
-    println(r)
+  f onFailure {
+    case r =>
+      println(r)
   }
 
   f onComplete { r =>

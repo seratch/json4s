@@ -129,7 +129,7 @@ object SerializationBugs extends Specification {
       }
 
       def serialize(implicit format: Formats) = {
-        case SingleValue(x: Double)         => JObject(List(JField("val", JDouble(x))))
+        case SingleValue(x: Double) => JObject(List(JField("val", JDouble(x))))
         case VectorValue(x: Vector[Double]) => JObject(List(JField("val", JArray(x.toList.map(JDouble(_))))))
       }
     }
@@ -178,10 +178,10 @@ package plan1 {
 
 package plan2 {
   case class Plan(leftOperand: Option[Action], operator: Option[String],
-                  rightOperand: Option[Action])
+    rightOperand: Option[Action])
   case class Game(buy: Map[String, Plan])
   case class Action(functionName: String, symbol: String,
-                    inParams: Array[Number], subOperand: Option[Action])
+    inParams: Array[Number], subOperand: Option[Action])
 }
 
 case class Opaque(x: JValue)

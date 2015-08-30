@@ -22,12 +22,12 @@ import text.Document
 object NativeXmlExamples extends XmlExamples[Document]("Native") with native.JsonMethods
 object JacksonXmlExamples extends XmlExamples[JValue]("Jackson") with jackson.JsonMethods
 
-abstract class XmlExamples[T](mod: String) extends Specification with JsonMethods[T]{
+abstract class XmlExamples[T](mod: String) extends Specification with JsonMethods[T] {
   import JsonDSL._
   import Xml._
-  import scala.xml.{Group, Text}
+  import scala.xml.{ Group, Text }
 
-  (mod+" XML Examples") should {
+  (mod + " XML Examples") should {
     "Basic conversion example" in {
       val json = toJson(users1)
       compact(render(json)) must_== """{"users":{"count":"2","user":[{"disabled":"true","id":"1","name":"Harry"},{"id":"2","name":"David","nickname":"Dave"}]}}"""
@@ -56,13 +56,12 @@ abstract class XmlExamples[T](mod: String) extends Specification with JsonMethod
     "Lotto example which flattens number arrays into encoded string arrays" in {
       def flattenArray(nums: List[JValue]) = JString(nums.map(_.values).mkString(","))
 
-      val printer = new scala.xml.PrettyPrinter(100,2)
+      val printer = new scala.xml.PrettyPrinter(100, 2)
       val lotto: JObject = LottoExample.json
       val xml = toXml(lotto.transformField {
         case JField("winning-numbers", JArray(nums)) => JField("winning-numbers", flattenArray(nums))
         case JField("numbers", JArray(nums)) => JField("numbers", flattenArray(nums))
       })
-
 
       printer.format(xml(0)) must_== printer.format(
         <lotto>
@@ -104,7 +103,7 @@ abstract class XmlExamples[T](mod: String) extends Specification with JsonMethod
       compact(render(json)) mustEqual """{"g":{"group":"foobar","url":"http://example.com/test"}}"""
     }
 
-    "Example with multiple attributes, multiple nested elements " in  {
+    "Example with multiple attributes, multiple nested elements " in {
       val a1 = attrToObject("stats", "count", s => JInt(s.s.toInt)) _
       val a2 = attrToObject("messages", "href", identity) _
       val json = a1(a2(toJson(messageXml1)))
@@ -136,36 +135,34 @@ abstract class XmlExamples[T](mod: String) extends Specification with JsonMethod
 
   val expected2 = """{"message":{"expiry_date":"20091126","stats":{"count":0}}}"""
 
-
   val band =
-        <b:band>
-          <name>The Fall</name>
-          <genre>rock</genre>
-          <influence/>
-          <playlists>
-            <playlist name="hits">
-              <song>Hit the north</song>
-              <song>Victoria</song>
-            </playlist>
-            <playlist name="mid 80s">
-              <song>Eat your self fitter</song>
-              <song>My new house</song>
-            </playlist>
-          </playlists>
-        </b:band>
-
+    <b:band>
+      <name>The Fall</name>
+      <genre>rock</genre>
+      <influence/>
+      <playlists>
+        <playlist name="hits">
+          <song>Hit the north</song>
+          <song>Victoria</song>
+        </playlist>
+        <playlist name="mid 80s">
+          <song>Eat your self fitter</song>
+          <song>My new house</song>
+        </playlist>
+      </playlists>
+    </b:band>
 
   val users1 =
-        <users count="2">
-          <user disabled="true">
-            <id>1</id>
-            <name>Harry</name>
-          </user>
-          <user>
-            <id>2</id>
-            <name nickname="Dave">David</name>
-          </user>
-        </users>
+    <users count="2">
+      <user disabled="true">
+        <id>1</id>
+        <name>Harry</name>
+      </user>
+      <user>
+        <id>2</id>
+        <name nickname="Dave">David</name>
+      </user>
+    </users>
 
   val users2 =
     <users>

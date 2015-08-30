@@ -2,7 +2,7 @@ package org.json4s
 package jackson
 
 import com.fasterxml.jackson.databind._
-import com.fasterxml.jackson.databind.DeserializationFeature.{USE_BIG_DECIMAL_FOR_FLOATS, USE_BIG_INTEGER_FOR_INTS}
+import com.fasterxml.jackson.databind.DeserializationFeature.{ USE_BIG_DECIMAL_FOR_FLOATS, USE_BIG_INTEGER_FOR_INTS }
 import scala.util.control.Exception.allCatch
 
 trait JsonMethods extends org.json4s.JsonMethods[JValue] {
@@ -22,11 +22,11 @@ trait JsonMethods extends org.json4s.JsonMethods[JValue] {
     if (useBigIntForLong) reader = reader `with` USE_BIG_INTEGER_FOR_INTS
 
     in match {
-	    case StringInput(s) => reader.readValue(s)
-	    case ReaderInput(rdr) => reader.readValue(rdr)
-	    case StreamInput(stream) => reader.readValue(stream)
-	    case FileInput(file) => reader.readValue(file)
-	  }
+      case StringInput(s) => reader.readValue(s)
+      case ReaderInput(rdr) => reader.readValue(rdr)
+      case StreamInput(stream) => reader.readValue(stream)
+      case FileInput(file) => reader.readValue(file)
+    }
   }
 
   def parseOpt(in: JsonInput, useBigDecimalForDouble: Boolean = false, useBigIntForLong: Boolean = true): Option[JValue] = allCatch opt {
@@ -42,7 +42,6 @@ trait JsonMethods extends org.json4s.JsonMethods[JValue] {
     val writer = mapper.writerWithDefaultPrettyPrinter[ObjectWriter]()
     writer.writeValueAsString(d)
   }
-
 
   def asJValue[T](obj: T)(implicit writer: Writer[T]): JValue = writer.write(obj)
   def fromJValue[T](json: JValue)(implicit reader: Reader[T]): T = reader.read(json)

@@ -21,26 +21,27 @@ trait JsonMethods extends org.json4s.JsonMethods[Document] {
     case FileInput(file) => JsonParser.parseOpt(Source.fromFile(file).bufferedReader(), useBigDecimalForDouble)
   }
 
-  /** Renders JSON.
+  /**
+   * Renders JSON.
    * @see Printer#compact
    * @see Printer#pretty
    */
   def render(value: JValue)(implicit formats: Formats = DefaultFormats): Document =
     formats.emptyValueStrategy.replaceEmpty(value) match {
-      case null          => text("null")
-      case JBool(true)   => text("true")
-      case JBool(false)  => text("false")
-      case JDouble(n)    => text(n.toString)
-      case JDecimal(n)   => text(n.toString)
-      case JLong(n)      => text(n.toString)
-      case JInt(n)       => text(n.toString)
-      case JNull         => text("null")
-      case JNothing      => sys.error("can't render 'nothing'")
+      case null => text("null")
+      case JBool(true) => text("true")
+      case JBool(false) => text("false")
+      case JDouble(n) => text(n.toString)
+      case JDecimal(n) => text(n.toString)
+      case JLong(n) => text(n.toString)
+      case JInt(n) => text(n.toString)
+      case JNull => text("null")
+      case JNothing => sys.error("can't render 'nothing'")
       case JString(null) => text("null")
-      case JString(s)    => text("\""+ParserUtil.quote(s)+"\"")
-      case JArray(arr)   => text("[") :: series(trimArr(arr).map(render)) :: text("]")
-      case JObject(obj)  =>
-        val nested = break :: fields(trimObj(obj).map({case (n,v) => text("\""+ParserUtil.quote(n)+"\":") :: render(v)}))
+      case JString(s) => text("\"" + ParserUtil.quote(s) + "\"")
+      case JArray(arr) => text("[") :: series(trimArr(arr).map(render)) :: text("]")
+      case JObject(obj) =>
+        val nested = break :: fields(trimObj(obj).map({ case (n, v) => text("\"" + ParserUtil.quote(n) + "\":") :: render(v) }))
         text("{") :: nest(2, nested) :: break :: text("}")
     }
 
@@ -53,10 +54,8 @@ trait JsonMethods extends org.json4s.JsonMethods[Document] {
     if (docs.isEmpty) empty
     else docs.reduceLeft((d1, d2) => d1 :: p :: d2)
 
-
   def compact(d: Document): String = Printer.compact(d)
   def pretty(d: Document): String = Printer.pretty(d)
-
 
 }
 

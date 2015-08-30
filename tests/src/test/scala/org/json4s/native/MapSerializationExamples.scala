@@ -2,9 +2,9 @@ package org.json4s.native
 
 import org.specs2.mutable.Specification
 import org.json4s._
-import org.json4s.native.Serialization.{read, write => swrite}
+import org.json4s.native.Serialization.{ read, write => swrite }
 import org.json4s.native
-import java.util.{GregorianCalendar, Date}
+import java.util.{ GregorianCalendar, Date }
 import java.sql.Timestamp
 
 class MapSerializationExamples extends Specification {
@@ -66,7 +66,7 @@ class MapSerializationExamples extends Specification {
 
   "Map with custom key and custom key serializer" in {
     val serializer = new CustomKeySerializer[KeyWithInt](format => (
-      { case s: String => KeyWithInt(s.toInt)},
+      { case s: String => KeyWithInt(s.toInt) },
       { case k: KeyWithInt => k.id.toString }
     ))
     implicit val formats = native.Serialization.formats(NoTypeHints) + serializer

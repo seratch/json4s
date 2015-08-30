@@ -4,7 +4,6 @@ package examples
 import dispatch._, Defaults._
 import com.ning.http.client.Response
 
-
 object DispatchExamples extends App with native.JsonMethods {
 
   import Api.formats
@@ -41,8 +40,9 @@ object DispatchExamples extends App with native.JsonMethods {
     println(jackson.Serialization.writePretty(api))
   }
 
-  f onFailure { case r =>
-    println(r)
+  f onFailure {
+    case r =>
+      println(r)
   }
 
   f onComplete { r =>

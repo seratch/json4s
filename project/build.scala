@@ -3,6 +3,7 @@ import Keys._
 import xml.Group
 import sbtbuildinfo.Plugin._
 import com.typesafe.sbt.SbtStartScript
+import com.typesafe.sbt.SbtScalariform._
 
 object build extends Build {
   import Dependencies._
@@ -47,7 +48,7 @@ object build extends Build {
     )}
   )
 
-  val json4sSettings = mavenCentralFrouFrou ++ Seq(
+  val json4sSettings = mavenCentralFrouFrou ++ scalariformSettings ++ Seq(
     organization := "org.json4s",
     scalaVersion := "2.11.7",
     crossScalaVersions := Seq("2.10.5", "2.11.7"),

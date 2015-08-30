@@ -25,7 +25,7 @@ import text.Document
 object NativeExtractionExamples extends ExtractionExamples[Document]("Native", native.Serialization) with native.JsonMethods
 object JacksonExtractionExamples extends ExtractionExamples[JValue]("Jackson", jackson.Serialization) with jackson.JsonMethods
 
-abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) extends Specification with JsonMethods[T] {
+abstract class ExtractionExamples[T](mod: String, ser: json4s.Serialization) extends Specification with JsonMethods[T] {
 
   implicit lazy val formats = DefaultFormats
 
@@ -35,7 +35,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 
   def treeFormats[T] = ser.formats(ShortTypeHints(List(classOf[Node[T]], classOf[Leaf[T]], EmptyLeaf.getClass)))
 
-  (mod+" Extraction Examples Specification") should {
+  (mod + " Extraction Examples Specification") should {
     "Extraction example" in {
       val json = parse(testJson)
       json.extract[Person] must_== Person("joe", Address("Bulevard", "Helsinki"), List(Child("Mary", 5, Some(date("2004-09-04T18:06:22Z"))), Child("Mazy", 3, None)))
@@ -66,7 +66,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
       val json = parse(twoAddresses)
       json.extract[PersonWithAddresses] must_==
         PersonWithAddresses("joe", Map("address1" -> Address("Bulevard", "Helsinki"),
-                                       "address2" -> Address("Soho", "London")))
+          "address2" -> Address("Soho", "London")))
     }
 
     "Mutable map extraction example" in {
@@ -129,7 +129,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 
     "Flatten example with simple case class" in {
       val f = Extraction.flatten(Extraction.decompose(SimplePerson("joe", Address("Bulevard", "Helsinki"))))
-      val e = Map(".name" -> "\"joe\"", ".address.street" -> "\"Bulevard\"", ".address.city"   -> "\"Helsinki\"")
+      val e = Map(".name" -> "\"joe\"", ".address.street" -> "\"Bulevard\"", ".address.city" -> "\"Helsinki\"")
 
       f must_== e
     }
@@ -137,17 +137,17 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
     "Unflatten example with top level string and int" in {
       val m = Map(".name" -> "\"joe\"", ".age" -> "32")
 
-      Extraction.unflatten(m) must_== JObject(List(JField("name",JString("joe")), JField("age",JInt(32))))
+      Extraction.unflatten(m) must_== JObject(List(JField("name", JString("joe")), JField("age", JInt(32))))
     }
 
     "Unflatten example with top level string and double" in {
       val m = Map(".name" -> "\"joe\"", ".age" -> "32.2")
 
-      Extraction.unflatten(m) must_== JObject(List(JField("name",JString("joe")), JField("age",JDouble(32.2))))
+      Extraction.unflatten(m) must_== JObject(List(JField("name", JString("joe")), JField("age", JDouble(32.2))))
     }
 
     "Unflatten example with two-level string properties" in {
-      val m = Map(".name" -> "\"joe\"", ".address.street" -> "\"Bulevard\"", ".address.city"   -> "\"Helsinki\"")
+      val m = Map(".name" -> "\"joe\"", ".address.street" -> "\"Bulevard\"", ".address.city" -> "\"Helsinki\"")
 
       Extraction.unflatten(m) must_== JObject(List(JField("name", JString("joe")), JField("address", JObject(List(JField("street", JString("Bulevard")), JField("city", JString("Helsinki")))))))
     }
@@ -260,7 +260,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
   }
 
   val testJson =
-"""
+    """
 { "name": "joe",
   "address": {
     "street": "Bulevard",
@@ -290,7 +290,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
     """.stripMargin
 
   val missingChildren =
-"""
+    """
 {
   "name": "joe",
   "address": {
@@ -301,7 +301,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 """
 
   val twoAddresses =
-"""
+    """
 {
   "name": "joe",
   "addresses": {
@@ -318,7 +318,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 """
 
   val primitives =
-"""
+    """
 {
   "l": 123,
   "i": 124,
@@ -333,7 +333,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 """
 
   val multiDimensionalArrays =
-"""
+    """
 {
   "ints": [[[1, 2], [3]], [[4], [5, 6]]],
   "names": [[{"name": "joe"}, {"name": "mary"}], [[{"name": "mazy"}]]]
@@ -341,7 +341,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 """
 
   val stringField =
-"""
+    """
 {
   "name": "one",
   "message": "msg"
@@ -349,7 +349,7 @@ abstract class ExtractionExamples[T](mod: String, ser : json4s.Serialization) ex
 """
 
   val objField =
-"""
+    """
 {
   "name": "one",
   "message": {
@@ -425,10 +425,10 @@ case class ClassWithJSON(name: String, message: JValue)
 
 sealed trait LeafTree[+T]
 object LeafTree {
-  def empty[T] : LeafTree[T] = EmptyLeaf
+  def empty[T]: LeafTree[T] = EmptyLeaf
 }
 
-case class Node[T](children : List[LeafTree[T]]) extends LeafTree[T]
-case class Leaf[T](value : T) extends LeafTree[T]
+case class Node[T](children: List[LeafTree[T]]) extends LeafTree[T]
+case class Leaf[T](value: T) extends LeafTree[T]
 case object EmptyLeaf extends LeafTree[Nothing]
 

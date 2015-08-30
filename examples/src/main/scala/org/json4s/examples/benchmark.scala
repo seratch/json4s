@@ -31,5 +31,3 @@ trait Benchmark {
   }
 }
 
-
-

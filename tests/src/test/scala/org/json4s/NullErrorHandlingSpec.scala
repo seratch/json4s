@@ -58,5 +58,4 @@ abstract class NullErrorHandlingSpec[T](mod: String) extends Specification with 
 case class NullErrorHandlingJson(
   val x: Int,
   val y: Boolean,
-  val z: String
-)
+  val z: String)
